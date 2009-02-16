@@ -1,5 +1,5 @@
 === Fresh From FriendFeed and Twitter ===
-Contributors: bobhitching
+Contributors: bob.hitching
 Donate link: http://www.redcross.org.au/vic/services_emergencyservices_victorian-bushfires-appeal-2009.htm
 Tags: FriendFeed, Twitter, Flickr, Facebook, Google, LinkedIn, YouTube, fresh, feed, posts, plugin
 Requires at least: 2.0
@@ -12,7 +12,7 @@ Keeps your blog always fresh by regularly adding your most recent content from F
 
 Keeps your blog always fresh by regularly adding your most recent content from FriendFeed or Twitter. No external passwords required!
 
-[Download](http://downloads.wordpress.org/plugin/fresh-from-friendfeed-and-twitter.zip) |
+[Download](http://downloads.wordpress.org/plugin/fresh-from-friendfeed-and-twitter.1.0.0.zip) |
 [Demo](http://hitching.net) |
 [Support](http://friendfeed.com/rooms/fresh-from-friendfeed-and-twitter)
 
@@ -36,7 +36,7 @@ Keeps your blog always fresh by regularly adding your most recent content from F
 
 == Frequently Asked Questions ==
 
-Here's the [Support Room](http://friendfeed.com/rooms/freshfrom) showing real and current, frequent and infrequent, questions and answers. If you cannot find the answer you need, please ask the question to the Room. Don't be shy.
+Here's the [Support Room](http://friendfeed.com/rooms/fresh-from-friendfeed-and-twitter) showing real and current, frequent and infrequent, questions and answers. If you cannot find the answer you need, please ask the question to the Room. Don't be shy.
 
 == Screenshots ==
 
