@@ -29,7 +29,7 @@ Keeps your blog always fresh by regularly adding your most recent content from F
 
 == Installation ==
 
-1. Upload the files to wp-content/plugins/fresh-from
+1. Upload the files to wp-content/plugins/fresh-from-friendfeed-and-twitter
 1. Activate the plugin through the 'Plugins' menu in WordPress
 1. Visit Settings / Fresh From to confirm your FriendFeed or Twitter username
 1. That's it!
