@@ -27,8 +27,11 @@ Keeps your blog always fresh by regularly adding your most recent content from F
 * Choose to show between 1 and 10 imported posts; FriendFeed users can also choose how many posts are imported from each of their FriendFeed services (e.g. Flickr, Facebook, etc.)
 * External API limits are well respected, and API responses are cached by Fresh From to protect your site against FriendFeed and Twitter downtime.
 
+Note: Fresh From requires at least WordPress 2.0 running on PHP5.x
+
 == Installation ==
 
+1. Requires PHP5.x
 1. Upload the files to wp-content/plugins/fresh-from-friendfeed-and-twitter
 1. Activate the plugin through the 'Plugins' menu in WordPress
 1. Visit Settings / Fresh From to confirm your FriendFeed or Twitter username
