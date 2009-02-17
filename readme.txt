@@ -31,7 +31,6 @@ Note: Fresh From requires at least WordPress 2.0 running on PHP5.x
 
 == Installation ==
 
-1. Requires PHP5.x
 1. Upload the files to wp-content/plugins/fresh-from-friendfeed-and-twitter
 1. Activate the plugin through the 'Plugins' menu in WordPress
 1. Visit Settings / Fresh From to confirm your FriendFeed or Twitter username
