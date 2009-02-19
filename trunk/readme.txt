@@ -6,11 +6,11 @@ Requires at least: 2.0
 Tested up to: 2.7.1
 Stable tag: 1.0.0
 
-Keeps your blog always fresh by regularly adding your best recent content from FriendFeed or Twitter. No external passwords required!
+Keeps your blog always fresh by regularly adding your latest and greatest content from FriendFeed or Twitter. No external passwords required!
 
 == Description ==
 
-Keeps your blog always fresh by regularly adding your best recent content from FriendFeed or Twitter. No external passwords required!
+Keeps your blog always fresh by regularly adding your latest and greatest content from FriendFeed or Twitter. No external passwords required!
 
 [Download](http://downloads.wordpress.org/plugin/fresh-from-friendfeed-and-twitter.1.0.0.zip) |
 [Demo](http://hitching.net) |
@@ -26,7 +26,7 @@ Keeps your blog always fresh by regularly adding your best recent content from F
 = More Features =
 
 * Includes SEO links to your FriendFeed, Twitter, Flickr, Facebook, Google, LinkedIn, YouTube, etc. profile pages.
-* A magic formula is used to determine the best posts to import. If you don't want to keep an imported post, simply delete it and Fresh From will automatically find some other content.
+* A magic 'latest and greatest' formula is used to work out what to import. If you don't want to keep an imported post, simply delete it and Fresh From will automatically find some other content.
 * Choose to show between 1 and 10 imported posts; FriendFeed users can also choose how many posts are imported from each of their FriendFeed services (e.g. Flickr, Facebook, etc.)
 * External API limits are well respected, and API responses are cached by Fresh From to protect your site against FriendFeed and Twitter downtime.
 
