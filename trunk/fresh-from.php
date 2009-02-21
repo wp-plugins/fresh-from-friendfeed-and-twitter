@@ -3,7 +3,7 @@
 Plugin Name: Fresh From FriendFeed and Twitter
 Plugin URI: http://wordpress.org/extend/plugins/fresh-from-friendfeed-and-twitter/
 Description: Keeps your blog always fresh by regularly adding your latest and greatest content from FriendFeed or Twitter. Content is imported as regular blog posts that you can edit and keep if you want. No external passwords required.
-Version: 1.0.1
+Version: 1.0.2
 Author: Bob Hitching
 Author URI: http://hitching.net/fresh-from-friendfeed-and-twitter
 */
@@ -11,7 +11,7 @@ Author URI: http://hitching.net/fresh-from-friendfeed-and-twitter
 require_once("fresh-from-friendfeed.php");
 require_once("fresh-from-twitter.php");
 
-define("_ffff_version", "1.0.1");
+define("_ffff_version", "1.0.2");
 define("_ffff_debug", false);
 define("_ffff_debug_email", "bob@hitching.net");
 define("_ffff_friendfeed_bot", "FriendFeedBot"); // user agent of Friendfeed Bot - so we can hide Fresh posts and avoid crashing the internet with an infinite loop
@@ -141,9 +141,10 @@ class freshfrom {
 	 *
 	 */	
 	static function upgrade() {	
+		$service = new freshfrom();
+		$service->restart();
+
 		update_option("ffff_pubstatus", "publish");
-		update_option("ffff_titleicon", ""); // default off
-		update_option("ffff_rss", ""); // default off
 		update_option("ffff_version", _ffff_version);
 	}
 	
@@ -166,8 +167,8 @@ class freshfrom {
 		delete_option("ffff_posts");
 		delete_option("ffff_posts_expire");
 				
-		// can we now detect a username?
-		$this->detect_username();
+		// can we now detect a username? 
+		if (method_exists($this, "detect_username")) $this->detect_username();
 	}
 	
 	/**
@@ -320,9 +321,10 @@ class freshfrom {
 			// have any posts been deleted?
 			$prefix = $GLOBALS["wpdb"]->prefix;
 			$posts_exist = $GLOBALS["wpdb"]->get_results("SELECT ID FROM {$prefix}posts WHERE ID IN (" . implode(",", array_keys($old_ffff_posts)) . ")");
-			foreach ($posts_exist AS &$post) $post = $post->ID;
+
+			foreach ($posts_exist AS $key=>$post) $posts_exist[$key] = $post->ID;			
 			$old_posts_deleted = array_diff(array_keys($old_ffff_posts), $posts_exist);
-			foreach ($old_posts_deleted AS &$post) $post = $old_ffff_posts[$post];
+			foreach ($old_posts_deleted AS $key=>$post) $old_posts_deleted[$key] = $old_ffff_posts[$post];
 		}
 		
 		// stop date is recent post / days ago, e.g. 2009-01-06 13:05:33
@@ -403,7 +405,7 @@ class freshfrom {
 				$this->services[$service_name]["mix"]--;
 
 				$total_posts--;
-				if (!$total_posts) break;
+				if ($total_posts < 1) break;
 			}
 		}	
 		
@@ -536,7 +538,7 @@ class freshfrom {
 	 * Add some filters to enhance content
 	 *
 	 */
-	function transform_content(&$post) {
+	function transform_content($post) {
 	
 		$content = $post->post_content;
 	
@@ -586,6 +588,7 @@ class freshfrom {
 		$ffff_twitpic = get_option("ffff_twitpic");
 		$ffff_youtube = get_option("ffff_youtube");
 		foreach ($urls AS $url) {
+			$pic_width = get_option("medium_size_w") ? get_option("medium_size_w") : 300;
 			if ($ffff_twitpic && strpos(parse_url($url, PHP_URL_HOST), "twitpic.com") !== false) {
 				if ($twitpic = file_get_contents($url)) {
 					preg_match("/\"http:\/\/s3.amazonaws.com\/twitpic\/photos\/large.*?\"/", $twitpic, $matches);

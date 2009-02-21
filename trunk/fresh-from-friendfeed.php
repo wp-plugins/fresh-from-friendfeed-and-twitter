@@ -127,7 +127,7 @@ class freshfromfriendfeed extends freshfrom {
 	 * @param SimpleXMLObject $service
 	 * @return string Service name
 	 */
-	function get_service_name(&$service) {
+	function get_service_name($service) {
 		$service_name = (string) $service->name;
 		if ($service->id == "blog") $service_name = (string) $service->profileUrl;
 		return $service_name;
@@ -215,7 +215,7 @@ class freshfromfriendfeed extends freshfrom {
 	 * @param object $entry SimpleXMLObject of FriendFeed entry
 	 * @return object WordPress post object, extended with some meta data used in Fresh From
 	 */
-	function get_post($post_date, &$entry, $service_name=null) {
+	function get_post($post_date, $entry, $service_name=null) {
 
 		if (!$service_name) $service_name = $this->get_service_name($entry->service);
 	
@@ -223,7 +223,7 @@ class freshfromfriendfeed extends freshfrom {
 		$nickname = (string) $entry->user->nickname;
 
 		$obj = parent::get_post($post_date);
-		$obj->post_title = sprintf(__("Fresh From %s", _ffff_lang_domain), $this->get_service_name($entry->service));
+		$obj->post_title = sprintf(__("Fresh From %s", _ffff_lang_domain), $service_name);
 
 		// generate content
 		$content = "";
@@ -244,6 +244,9 @@ class freshfromfriendfeed extends freshfrom {
 				$url = (string) $entry->media->thumbnail->url;
 			} elseif (isset($entry->media->content->url) && !isset($entry->media->content->type)) {
 				$url = (string) $entry->media->content->url;
+			} elseif (isset($entry->media->enclosure->url) && isset($entry->media->enclosure->type) && strpos((string) $entry->media->enclosure->type, "image") === 0) {
+				// e.g. stumbleupon
+				$url = (string) $entry->media->enclosure->url;			
 			}
 
 			if (isset($url)) {

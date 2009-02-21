@@ -110,7 +110,7 @@ class freshfromtwitter extends freshfrom {
 	 * @param object $entry SimpleXMLObject of Twitter entry
 	 * @return object WordPress post object, extended with some meta data used in Fresh From
 	 */
-	function get_post($post_date, &$entry) {
+	function get_post($post_date, $entry) {
 
 		// generate content - including profile thumbnail
 		$profile_image_url = (string) $entry->user->profile_image_url;
