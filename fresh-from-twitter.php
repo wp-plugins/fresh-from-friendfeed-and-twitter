@@ -6,14 +6,14 @@
  */
 class freshfromtwitter extends freshfrom {
 
-	protected $service = "twitter";
-	protected $admin_title = "Fresh From Twitter";
+	var $service = "twitter";
+	var $admin_title = "Fresh From Twitter";
 
 	// cache time in seconds
-	protected $ttl = 300;
+	var $ttl = 300;
 	
-	protected $banner = "http://assets1.twitter.com/images/twitter_logo_s.png";
-	protected $password_label = "Password";
+	var $banner = "http://assets1.twitter.com/images/twitter_logo_s.png";
+	var $password_label = "Password";
 
 	function __construct() {
 		parent::__construct();
@@ -129,7 +129,7 @@ class freshfromtwitter extends freshfrom {
 		}
 
 		$obj = parent::get_post($post_date);
-		$obj->post_title = "Fresh From Twitter";
+		$obj->post_title = __("Fresh From Twitter", _ffff_lang_domain);
 		$obj->post_content = $content;
 		$obj->guid = "http://twitter.com/{$this->username}/statuses/" . $entry->id;
 		$obj->comment_count = 0;

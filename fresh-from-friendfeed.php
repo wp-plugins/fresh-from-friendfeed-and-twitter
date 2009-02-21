@@ -6,14 +6,14 @@
  */
 class freshfromfriendfeed extends freshfrom {
 
-	protected $service = "friendfeed";
-	protected $admin_title = "Fresh From FriendFeed";
+	var $service = "friendfeed";
+	var $admin_title = "Fresh From FriendFeed";
 
 	// cache time in seconds
-	protected $ttl = 300;
+	var $ttl = 300;
 
-	protected $banner = "http://friendfeed.com/static/images/logo-api.png";
-	protected $password_label = "Remote key";
+	var $banner = "http://friendfeed.com/static/images/logo-api.png";
+	var $password_label = "Remote key";
 
 	function __construct() {
 		parent::__construct();
@@ -218,7 +218,7 @@ class freshfromfriendfeed extends freshfrom {
 		$nickname = (string) $entry->user->nickname;
 
 		$obj = parent::get_post($post_date);
-		$obj->post_title = "Fresh From " . $this->get_service_name($entry->service);
+		$obj->post_title = sprintf(__("Fresh From %s", _ffff_lang_domain), $this->get_service_name($entry->service));
 
 		// generate content
 		$content = "";
