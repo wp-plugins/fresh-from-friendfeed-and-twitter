@@ -2,8 +2,8 @@
 /*
 Plugin Name: Fresh From FriendFeed and Twitter
 Plugin URI: http://wordpress.org/extend/plugins/fresh-from-friendfeed-and-twitter/
-Description: Keeps your blog always fresh by automatically adding your most recent content from FriendFeed or Twitter. Content is imported as regular blog posts that you can edit and keep if you want. No external passwords required.
-Version: 1.0.0
+Description: Keeps your blog always fresh by regularly adding your latest and greatest content from FriendFeed or Twitter. Content is imported as regular blog posts that you can edit and keep if you want. No external passwords required.
+Version: 1.0.1
 Author: Bob Hitching
 Author URI: http://hitching.net/fresh-from-friendfeed-and-twitter
 */
@@ -11,7 +11,7 @@ Author URI: http://hitching.net/fresh-from-friendfeed-and-twitter
 require_once("fresh-from-friendfeed.php");
 require_once("fresh-from-twitter.php");
 
-define("_ffff_version", "1.0.0");
+define("_ffff_version", "1.0.1");
 define("_ffff_debug", false);
 define("_ffff_debug_email", "bob@hitching.net");
 define("_ffff_friendfeed_bot", "FriendFeedBot"); // user agent of Friendfeed Bot - so we can hide Fresh posts and avoid crashing the internet with an infinite loop
@@ -27,6 +27,11 @@ define("_ffff_weight_comments", 10);
 define("_ffff_weight_lots_of_comments", 15);
 define("_ffff_weight_media", 15);
 define("_ffff_weight_quantity", 10);
+define("_ffff_lang_domain", "fresh-from-friendfeed-and-twitter");
+
+// setup L10N
+$plugin_dir = basename(dirname(__FILE__));
+load_plugin_textdomain(_ffff_lang_domain, 'wp-content/plugins/' . $plugin_dir, $plugin_dir);
 
 // start the plugin
 freshfrom::start();
@@ -39,20 +44,20 @@ freshfrom::start();
 class freshfrom {
 
 	// not chosen yet in this base class
-	protected $service; 
+	var $service; 
 	
 	// ... but we still need a title for the admin page
-	protected $admin_title = "Fresh From FriendFeed &/or Twitter";
+	var $admin_title = "Fresh From FriendFeed &/or Twitter";
 	
 	// FriendFeed includes many services, e.g. Flickr and Facebook - this array stores the required mix of imported content
-	protected $services = array();
+	var $services = array();
 
-	protected $username;
+	var $username;
 	
 	// set to true during post loop; some filters need to know this context
-	protected $is_looping = false;
+	var $is_looping = false;
 	
-	protected $debug_timelog = array();
+	var $debug_timelog = array();
 	
 	function __construct() {
 		if ($this->service) $this->username = get_option("ffff_{$this->service}_username");
@@ -62,6 +67,7 @@ class freshfrom {
 	static function start() {
 		// run once
 		if (!get_option("ffff_version")) freshfrom::run_once();
+		elseif (get_option("ffff_version") < _ffff_version) freshfrom::upgrade();
 		
 		// need to check updated settings before we start
 		if (is_admin() && isset($_POST["ffff_service"])) {
@@ -115,8 +121,9 @@ class freshfrom {
 		// default number of posts
 		update_option("ffff_total_posts", 4);
 		
-		// default content expiry
-		update_option("ffff_freshness", "recent");
+		// default content import settings
+		update_option("ffff_pubstatus", "publish");
+		update_option("ffff_freshness", "days");
 		update_option("ffff_freshness_days", "7");
 		
 		// default content enhancement
@@ -129,6 +136,17 @@ class freshfrom {
 		update_option("ffff_version", _ffff_version);
 	}
 
+	/**
+	 * Upgrade from previous versions
+	 *
+	 */	
+	static function upgrade() {	
+		update_option("ffff_pubstatus", "publish");
+		update_option("ffff_titleicon", ""); // default off
+		update_option("ffff_rss", ""); // default off
+		update_option("ffff_version", _ffff_version);
+	}
+	
 	/**
 	 * Delete all Fresh From posts. Called when switching between FriendFeed and Twitter.
 	 *
@@ -160,14 +178,9 @@ class freshfrom {
 		$this->timelog("Setting up some hooks");
 		
 		if ($this->username) {
-			// hide Fresh From posts from the FriendFeed Bot so we don't break the internet
-			if (strpos($_SERVER["HTTP_USER_AGENT"], _ffff_friendfeed_bot)) {
-				add_filter("posts_where", array($this, "exclude_fresh_posts")); // requires 1.5
-			} else {
-				add_action("pre_get_posts", array($this, "pre_get_posts")); // requires 2.0
-				add_action("loop_start", array($this, "loop_start")); // requires 2.0
-				add_action("loop_end", array($this, "loop_end")); // requires 2.0
-			}	
+			add_action("pre_get_posts", array($this, "pre_get_posts")); // requires 2.0
+			add_action("loop_start", array($this, "loop_start")); // requires 2.0
+			add_action("loop_end", array($this, "loop_end")); // requires 2.0
 		}
 		
 		// add an Admin option for Fresh From Settings
@@ -241,6 +254,9 @@ class freshfrom {
 	function ffff_curl($url, $cache_key=null) {
 		$this->timelog("CURL: " . $url);
 
+		// v1.0.1 check for curl support - fail will be reported on the Admin page
+		if (!is_callable('curl_init')) return;
+		
 		// get external data
 		$curl_handle = curl_init();
 		curl_setopt($curl_handle, CURLOPT_URL, $url);
@@ -279,6 +295,13 @@ class freshfrom {
 	 * @return
 	 */
 	function pre_get_posts() {
+
+		// hide Fresh From posts from the FriendFeed Bot so we don't break the internet
+		// hide from RSS feeds so that WordPress => FeedBurner etc. => FriendFeed doesn't break the internet
+		if (strpos($_SERVER["HTTP_USER_AGENT"], _ffff_friendfeed_bot) || (is_feed() && !get_option("ffff_rss"))) {
+			add_filter("posts_where", array($this, "exclude_fresh_posts")); // requires 1.5
+			return;
+		}
 
 		if (!isset($_GET["ffff_refresh"])) {		
 			// check cache expiry
@@ -342,9 +365,6 @@ class freshfrom {
 				$wp_id = array_search($external_id, $old_ffff_posts);		
 			} else {
 				
-				// enhance content here, so video can trump thumbnails
-				$post->post_content = $this->transform_content($post);
-
 				// do not import if this has previously been edited / decoupled?
 				$prefix = $GLOBALS["wpdb"]->prefix;
 				$post_decoupled = $GLOBALS["wpdb"]->get_results("SELECT post_id FROM {$prefix}postmeta WHERE meta_key='_ffff_external_id' AND meta_value='{$external_id}'");
@@ -352,7 +372,14 @@ class freshfrom {
 					$this->timelog("Skipped post with external id={$external_id}");
 					continue;
 				}
-				
+
+				// add rss_subtitle of first two words
+				$sub_words = explode(" ", strip_tags($post->post_content));
+				$post->meta["_ffff_rss_subtitle"] = implode(" ", array_slice($sub_words, 0, 2)) . (count($sub_words) > 2 ? " ..." : "");
+
+				// enhance content here, so video can trump thumbnails
+				$post->post_content = $this->transform_content($post);
+
 				// add post
 				$post->post_content = addslashes($post->post_content); // for Wordpress 2.0.x database insert
 				$wp_id = wp_insert_post($post);
@@ -399,13 +426,17 @@ class freshfrom {
 
 	// generic 
 	function get_post($post_date) {
+	
+		$post_status = get_option("ffff_pubstatus");
+		if (!$post_status) $post_status = "publish";
+	
 		$obj = new stdClass();
 		$obj->post_author = 1; // default author 
 		$obj->post_date = $post_date;
 		$obj->post_date_gmt = $post_date;
 		$obj->post_category = 0;
 		$obj->post_excerpt = "";
-		$obj->post_status = "publish";
+		$obj->post_status = $post_status;
 		$obj->comment_status = "";
 		$obj->ping_status = "";
 		$obj->post_password = "";
@@ -595,7 +626,16 @@ EOF;
 	function the_title($title) {
 		$custom_fields = get_post_custom();
 		if ($this->is_looping && isset($custom_fields["FreshFrom"])) {
-			$title = "<img src=\"" . $custom_fields["_ffff_iconUrl"][0] . "\" align=\"baseline\" /> " . $title;
+			
+			if (is_feed()) {
+				// add something useful for feeds to distinguish multiple Fresh From posts
+				if (isset($custom_fields["_ffff_rss_subtitle"])) {
+					$title .= ": " . $custom_fields["_ffff_rss_subtitle"][0];
+				}
+			} elseif (get_option("ffff_titleicon")) {
+				// v1.0.1 new Admin Setting to hide service icon from title if it stuffs up your funky theme
+				$title = "<img src=\"" . $custom_fields["_ffff_iconUrl"][0] . "\" align=\"baseline\" /> " . $title;
+			}
 		}
 		return $title;
 	}
@@ -673,18 +713,22 @@ EOF;
 		$status["WordPress"] = array('info', "Version: " . $GLOBALS["wp_version"]);
 		$status["Fresh From"] = array('info', "Version: " . _ffff_version);
 
-		if (extension_loaded('suhosin')) {
-			$status["Libcurl"] = array(false, 'Hardened php (suhosin) extension active -- curl version checking skipped.');
-		} else {
-			$curl_message = '';
-			if (function_exists('curl_version')) {
+		// CURL
+		$curl_message = '';
+		if (is_callable('curl_init')) {
+			if (extension_loaded('suhosin') || !function_exists('curl_version')) {
+				$curl_message = "Installed.";
+			} else {
 				$curl_version = curl_version();
 				if (isset($curl_version['version'])) $curl_message = "Version: " . $curl_version['version'];
-			} else {
-				$curl_message =	"This PHP installation does not have support for libcurl which is required by the Fresh From plugin.";
 			}
-			$status["Libcurl"] = array(isset($curl_version), $curl_message);
+			$status["Libcurl"] = array(true, $curl_message);
+			
+		} else {
+			$curl_message =	"This PHP installation does not have support for libcurl which is required by the Fresh From plugin.";
+			$status["Libcurl"] = array(false, $curl_message);
 		}
+		$status["Libcurl"] = array(isset($curl_version), $curl_message);
 		
 		// API status
 		if ($this->service) {
@@ -740,15 +784,20 @@ EOF;
 				update_option("ffff_friendfeed_services", $this->services);
 			}
 			
+			// pubstatus
+			update_option("ffff_pubstatus", $_POST["ffff_pubstatus"]);
+			
 			// stop date
 			update_option("ffff_freshness", $_POST["ffff_freshness"]);
 			update_option("ffff_freshness_days", $_POST["ffff_freshness_days"]);
 			
 			// advanced options
+			update_option("ffff_titleicon", $_POST["ffff_titleicon"]);
 			update_option("ffff_redirect", $_POST["ffff_redirect"]);
 			update_option("ffff_redirect_hosts", $_POST["ffff_redirect_hosts"]);
 			update_option("ffff_twitpic", $_POST["ffff_twitpic"]);
 			update_option("ffff_youtube", $_POST["ffff_youtube"]);
+			update_option("ffff_rss", $_POST["ffff_rss"]);
 
 			$this->admin_alert("Settings have been saved.");
 		}
@@ -846,31 +895,50 @@ EOF;
 			}
 		}
 		
+		// pubstatus
+		$ffff_pubstatus = get_option("ffff_pubstatus");
+		$pubstatus_control = "<p>Imported posts are <select name=\"ffff_pubstatus\">";
+		$pubstatii = array("publish"=>"Published", "draft"=>"Draft");
+		foreach ($pubstatii AS $pubkey=>$pubval) {
+			$pubstatus_control .= "<option value=\"{$pubkey}\"" . ($pubkey == $ffff_pubstatus ? " selected" : "") . ">{$pubval}</option>";
+		}
+		$pubstatus_control .= "</select></p>\n";
+		
 		// stop date
 		$ffff_freshness = get_option("ffff_freshness");
 		$ffff_freshness_days = get_option("ffff_freshness_days");
 		$stop_date = $this->get_recent_post_date();
-		$freshness_control = "<p><input type=\"radio\" name=\"ffff_freshness\" value=\"recent\" " . ($ffff_freshness == "recent" ? 'checked="checked"' : "") . "/> Show Fresh content since my latest post";
-		if ($stop_date) $freshness_control .= " (currently {$stop_date})</p>";
-		$freshness_control .= "<p><input type=\"radio\" name=\"ffff_freshness\" value=\"days\" " . ($ffff_freshness == "days" ? 'checked="checked"' : "") . "/> Show Fresh content from the last <select name=\"ffff_freshness_days\">";
-		for ($i = 1; $i <= 10; $i++) {
+		$freshness_control = "<table><tr><td>Show Fresh content&nbsp;</td><td><input type=\"radio\" name=\"ffff_freshness\" value=\"recent\" " . ($ffff_freshness == "recent" ? 'checked="checked"' : "") . "/> Since my latest post";
+		if ($stop_date) $freshness_control .= " <font color=\"#AAAAAA\">(currently {$stop_date})</font>";
+		
+		$freshness_control .= "</td></tr>\n<tr><td></td><td><input type=\"radio\" name=\"ffff_freshness\" value=\"days\" " . ($ffff_freshness == "days" ? 'checked="checked"' : "") . "/> From the last <select name=\"ffff_freshness_days\">";
+		for ($i = 1; $i <= 30; $i++) {
 			$freshness_control .= "<option value=\"{$i}\"" . ($i == $ffff_freshness_days ? " selected" : "") . ">{$i}</option>\n";
 		}
-		$freshness_control .= "</select> days</p>";
+		$freshness_control .= "</select> days</td></tr></table>";
 
-		// twitpic control
-		$ffff_twitpic = get_option("ffff_twitpic");
-		$twitpic_control = "<input type=\"checkbox\" name=\"ffff_twitpic\" " . ($ffff_twitpic ? "checked=\"checked\" " : "") . "/>";
+		// titleicon_control
+		$ffff_titleicon = get_option("ffff_titleicon");
+		$titleicon_control = "<input type=\"checkbox\" name=\"ffff_titleicon\" " . ($ffff_titleicon ? "checked=\"checked\" " : "") . "/>";	
 
-		$ffff_youtube = get_option("ffff_youtube");
-		$youtube_control = "<input type=\"checkbox\" name=\"ffff_youtube\" " . ($ffff_youtube ? "checked=\"checked\" " : "") . "/>";	
-		
 		// redirect controls
 		$ffff_redirect = get_option("ffff_redirect");
 		$ffff_redirect_hosts = get_option("ffff_redirect_hosts");
 		$redirect_control = "<input type=\"checkbox\" name=\"ffff_redirect\" " . ($ffff_redirect ? "checked=\"checked\" " : "") . "/>";
 		$redirect_host_control = "<input type=\"text\" name=\"ffff_redirect_hosts\" value=\"{$ffff_redirect_hosts}\" style=\"width:300px;\" />";
 
+		// twitpic control
+		$ffff_twitpic = get_option("ffff_twitpic");
+		$twitpic_control = "<input type=\"checkbox\" name=\"ffff_twitpic\" " . ($ffff_twitpic ? "checked=\"checked\" " : "") . "/>";
+
+		// youtube
+		$ffff_youtube = get_option("ffff_youtube");
+		$youtube_control = "<input type=\"checkbox\" name=\"ffff_youtube\" " . ($ffff_youtube ? "checked=\"checked\" " : "") . "/>";	
+
+		// rss
+		$ffff_rss = get_option("ffff_rss");
+		$rss_control = "<input type=\"checkbox\" name=\"ffff_rss\" " . ($ffff_rss ? "checked=\"checked\" " : "") . "/>";	
+		
 		// help!
 		$support_room = _ffff_support_room;
 
@@ -930,13 +998,16 @@ EOF;
 
 </td><td width=10></td><td valign="top">
 
-<h3>Content Expiry</h3>
+<h3>Content Import</h3>
+{$pubstatus_control}
 {$freshness_control}
 
 <h3>Content Enhancement</h3>
+<p>{$titleicon_control} Show service icon in title <font color="#AAAAAA">(careful; this can disrupt funky themes)</font></p>
 <p>{$redirect_control} Show full URL hints for these URL shorteners: {$redirect_host_control}</p>
 <p>{$twitpic_control} Show images from Twitpic links</p>
 <p>{$youtube_control} Show videos from Youtube links</p>
+<p>{$rss_control} Show Fresh From posts in my RSS feeds</p>
 EOF;
 
 		echo <<<EOF

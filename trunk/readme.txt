@@ -30,7 +30,7 @@ Keeps your blog always fresh by regularly adding your latest and greatest conten
 * Choose to show between 1 and 10 imported posts; FriendFeed users can also choose how many posts are imported from each of their FriendFeed services (e.g. Flickr, Facebook, etc.)
 * External API limits are well respected, and API responses are cached by Fresh From to protect your site against FriendFeed and Twitter downtime.
 
-Note: Fresh From requires WordPress 2.0 or higher, running on PHP5.x
+Note: Fresh From requires WordPress 2.0 or higher, running on PHP5.x with CURL.
 
 == Installation ==
 
