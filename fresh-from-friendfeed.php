@@ -143,6 +143,9 @@ class freshfromfriendfeed extends freshfrom {
 	 * @return array List of posts
 	 */
 	function get_posts($stop_date) {
+	
+		$entries = array();
+	
 		// user feed
 		$url = "http://friendfeed.com/api/feed/user/{$this->username}?num=50&format=xml";
 		$data = $this->ffff_curl($url, "user");
@@ -156,20 +159,22 @@ class freshfromfriendfeed extends freshfrom {
 					// proof that this is an expected response
 					elseif (!isset($new_posts)) $new_posts = array();
 				
-					$entry_id = (string) $entry->id;
-
 					// ff date format 2009-01-25T09:28:22Z, wp 2009-01-06 13:05:33
 					$post_date = str_replace(array("T", "Z"), " ", $entry->published);
 					if ($post_date < $stop_date) continue;
 
 					// generate a WP object
-					$new_posts[] = $this->get_post($post_date, $entry);
+					$entry_id = (string) $entry->id;
+					if (!in_array($entry_id, $entries)) {
+						$new_posts[] = $this->get_post($post_date, $entry);
+						$entries[] = $entry_id;
+					}
 				}
 			}
 		}	
 
 		// comments feed
-		$url = "http://friendfeed.com/api/feed/user/{$this->username}/comments?num=10&format=xml";
+		$url = "http://friendfeed.com/api/feed/user/{$this->username}/comments?num=50&format=xml";
 		$data = $this->ffff_curl($url, "comments");
 		if ($data) {
 			$xml = simplexml_load_string($data);
@@ -181,16 +186,16 @@ class freshfromfriendfeed extends freshfrom {
 					if (!isset($entry->id)) continue;
 					// proof that this is an expected response
 					elseif (!isset($new_posts)) $new_posts = array();
-
-					$entry_id = (string) $entry->id;
 					
 					// ff date format 2009-01-25T09:28:22Z, wp 2009-01-06 13:05:33		
 					$post_date = str_replace(array("T", "Z"), " ", $entry->published);
 					if ($post_date < $stop_date) continue;
 
 					// only add if posted by a different user and we are commenting
-					if ((string) $entry->user->nickname != $this->username) {
+					$entry_id = (string) $entry->id;
+					if (!in_array($entry_id, $entries)) {
 						$new_posts[] = $this->get_post($post_date, $entry, _ffff_comments_label);
+						$entries[] = $entry_id;
 					}
 				}
 			}
