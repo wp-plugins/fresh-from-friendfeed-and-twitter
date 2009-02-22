@@ -250,7 +250,7 @@ class freshfromfriendfeed extends freshfrom {
 			}
 
 			if (isset($url)) {
-				$media = "<img src=\"{$url}\" border=\"0\" />";
+				$media = "<img src=\"{$url}\" border=\"0\" style=\"border:1px solid #CCCCCC;padding:1px;\" />";
 				
 				if ($link = $entry->media->link) {
 					$media = "<a href=\"{$link}\">{$media}</a>";
