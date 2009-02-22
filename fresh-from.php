@@ -588,12 +588,9 @@ class freshfrom {
 		$ffff_twitpic = get_option("ffff_twitpic");
 		$ffff_youtube = get_option("ffff_youtube");
 		foreach ($urls AS $url) {
-			$pic_width = get_option("medium_size_w") ? get_option("medium_size_w") : 300;
 			if ($ffff_twitpic && strpos(parse_url($url, PHP_URL_HOST), "twitpic.com") !== false) {
-				if ($twitpic = file_get_contents($url)) {
-					preg_match("/\"http:\/\/s3.amazonaws.com\/twitpic\/photos\/large.*?\"/", $twitpic, $matches);
-					if (count($matches)) $post->media_content = "<img src={$matches[0]} width=\"400\" />";
-				}
+				$twitpic_img = str_replace("twitpic.com", "twitpic.com/show/thumb", $url) . ".jpg";
+				$post->media_content = "<a href=\"{$url}\"><img src=\"{$twitpic_img}\" style=\"border:1px solid #CCCCCC;padding:1px;\" /></a>";
 			}
 			
 			if ($ffff_youtube && strpos(parse_url($url, PHP_URL_HOST), "youtube.com") !== false) {
@@ -604,6 +601,12 @@ class freshfrom {
 <object width="480" height="295"><param name="movie" value="http://www.youtube.com/v/{$youtube_params["v"]}&hl=en&fs=1"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/{$youtube_params["v"]}&hl=en&fs=1" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="480" height="295"></embed></object>
 EOF;
 				}				
+			}
+			
+			// bit.ly thumbnails - easter egg - doesn't work on custom bit.ly URLs yet
+			if (strpos(parse_url($url, PHP_URL_HOST), "bit.ly") !== false) {
+				$bitly_img = str_replace("bit.ly", "s.bit.ly/bitly", $url) . "/thumbnail_medium.png";
+				$post->media_content = "<a href=\"{$url}\"><img src=\"{$bitly_img}\" /></a>";
 			}
 			
 			// please submit a feature request if you want to see other content enhancements!
