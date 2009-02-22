@@ -4,7 +4,7 @@ Donate link: http://www.redcross.org.au/vic/services_emergencyservices_victorian
 Tags: FriendFeed, Twitter, Flickr, Facebook, Google, LinkedIn, YouTube, fresh, feed, lifestream, posts, plugin
 Requires at least: 2.0
 Tested up to: 2.7.1
-Stable tag: 1.0.0
+Stable tag: 1.0.2
 
 Keeps your blog always fresh by regularly adding your latest and greatest content from FriendFeed or Twitter. No external passwords required!
 
@@ -39,11 +39,26 @@ Note: Fresh From requires WordPress 2.0 or higher, running on PHP5.x with CURL.
 1. Visit Settings / Fresh From to confirm your FriendFeed or Twitter username
 1. That's it!
 
-== Frequently Asked Questions ==
-
-Here's the [Support Room](http://friendfeed.com/rooms/fresh-from-friendfeed-and-twitter) showing real-time, warts 'n' all, frequent and infrequent, questions and answers. If you cannot find the answer you need, please ask the question to the Room. Don't be shy.
-
 == Screenshots ==
 
 1. Fresh From enhances imported content in many ways. Here's an embedded YouTube video that has been detected, and a thumbnail showing who I'm talking with on FriendFeed.
 2. The Fresh From admin page showing the FriendFeed service mix and Content Enhancement options.
+
+== Frequently Asked Questions ==
+
+Here's the [Support Room](http://friendfeed.com/rooms/fresh-from-friendfeed-and-twitter) showing real-time, warts 'n' all, frequent and infrequent, questions and answers. If you cannot find the answer you need, please ask the question to the Room. Don't be shy.
+
+== Changelog ==
+
+= 1.0.2 =
+* Import stumbleupon images
+* New Twitpic thumbnails
+
+= 1.0.1 =
+* New Admin setting 'Imported posts are Published / Draft' so you can edit them first
+* New Admin setting 'Show service icon in title' which solves the disruption to funky themes 
+* New Admin setting 'Show Fresh From posts in my RSS feeds' which solves the FeedBurner issue
+* RSS titles now show a couple of words from the content to help distinguish between posts
+* Can now show content up to 30 days old (previously 10)
+* CURL detection is now more graceful, and lack of CURL is reported on the Admin page
+* Import direct FriendFeed comments
