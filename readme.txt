@@ -12,7 +12,7 @@ Keeps your blog always fresh by regularly adding your latest and greatest conten
 
 Keeps your blog always fresh by regularly adding your latest and greatest content from FriendFeed or Twitter. No external passwords required!
 
-[Download](http://downloads.wordpress.org/plugin/fresh-from-friendfeed-and-twitter.1.0.0.zip) |
+[Download](http://downloads.wordpress.org/plugin/fresh-from-friendfeed-and-twitter.1.0.2.zip) |
 [Demo](http://hitching.net) |
 [Support](http://friendfeed.com/rooms/fresh-from-friendfeed-and-twitter)
 
