@@ -20,7 +20,7 @@ Keeps your blog always fresh by regularly adding your latest and greatest conten
 
 * Mashup multiple feeds of fresh content from all your FriendFeed and Twitter accounts into your blog.
 * Also import content from FriendFeed Rooms and FriendFeed Search and (*NEW*) Twitter Search.
-* Choose to only import content containing a chosen hashtag e.g. #blog which becomes your mechanism to send your micro-blogging content to your blog.
+* Choose to only import content containing your chosen hashtag e.g. #blog which becomes your mechanism to send your micro-blogging content to your blog.
 * Digest summary; per service, per user or all together.
 * 'Keep it Fresh' mode - simply show your latest and greatest content, regularly refreshed. Less is more.
 * 'Keep it Coming' mode - import content every day and keep it archived in your blog.
@@ -29,7 +29,7 @@ Keeps your blog always fresh by regularly adding your latest and greatest conten
 
 * Automatically detects your FriendFeed and Twitter username; simple out-of-the-box install!
 * No external passwords are required because only public FriendFeed and Twitter APIs are used. 
-* Content is imported as regular blog posts which can be easily edited, tagged and kept; or simply leave Fresh From to automatically replace imported posts with fresher content when it becomes available.
+* Content is imported as regular blog posts which can be easily edited, tagged and kept.
 * Content is automatically enhanced in many ways, including Twitpic photos and embedded YouTube videos.
 
 = And there's more... =
@@ -51,7 +51,7 @@ Note: Fresh From requires WordPress 2.3 or higher, running on PHP4 or PHP5, with
 == Screenshots ==
 
 1. Fresh From enhances imported content in many ways. Here's an embedded YouTube video that has been detected, and a thumbnail showing who I'm talking with on FriendFeed.
-2. The Fresh From admin page showing the FriendFeed service mix and Content Enhancement options.
+2. The Fresh From admin page showing Feeds, Services, Import and Content Enhancement options.
 
 == Frequently Asked Questions ==
 
@@ -70,7 +70,7 @@ Here's the [Support Room](http://friendfeed.com/rooms/fresh-from-friendfeed-and-
 * Fixed: FriendFeed direct content now imported
 * Fixed: busy sites do not suffer from repeat imports
 * Works on PHP4 as well as PHP5
-* Ready for L10N multi-language support
+* Ready for i18n multi-language support
 
 = 1.0.2 =
 * Import stumbleupon images
