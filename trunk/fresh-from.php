@@ -1535,7 +1535,7 @@ EOF;
 		$control["kic_period"] .= "</select>";
 
 		$control["mode_kic"] = "<p><input type=\"radio\" id=\"ffff_mode_kic\" name=\"ffff_mode\" value=\"kic\" " . ($ffff_mode == "kic" ? 'checked="checked"' : "") . " onChange=\"alert('" . __("Changing this setting will delete all posts previously imported by Fresh From.", _ffff_lang_domain) . "');\" /> <label for=\"ffff_mode_kic\"><b>" . __("Keep it Coming", _ffff_lang_domain) . ":</b></label> ";
-		$control["mode_kic"] .= sprintf(__("Import up to %s items every %s into my blog", _ffff_lang_domain), $control["total_kic"], $control["kic_period"]);
+		$control["mode_kic"] .= sprintf(__("Import up to %s items every %s into my blog.", _ffff_lang_domain), $control["total_kic"], $control["kic_period"]);
 		
 		// filter
 		$checkbox = sprintf('<input type="checkbox" id="ffff_filter" name="ffff_filter" %s />', $ffff_filter ? 'checked="checked"' : '');	
@@ -1971,20 +1971,41 @@ EOF;
 		}
 		
 		// extract any media thumbnail
-		if (isset($entry->media)) {
-			if (isset($entry->media->thumbnail)) {
-				$thumbnail = is_array($entry->media->thumbnail) ? array_pop($entry->media->thumbnail) : $entry->media->thumbnail;
-				$url = (string) $thumbnail->url;
-			} elseif (isset($entry->media->content->url) && !isset($entry->media->content->type)) {
-				$url = (string) $entry->media->content->url;
-			} elseif (isset($entry->media->enclosure->url) && isset($entry->media->enclosure->type) && strpos((string) $entry->media->enclosure->type, "image") === 0) {
-				// e.g. stumbleupon
-				$url = (string) $entry->media->enclosure->url;			
+		if ($entry->media) {
+			if ($entry->media->thumbnail) {
+				// adjust for PHP4 single comment
+				$thumbnails = class_exists("simplexml") && $entry->media->thumbnail->url ? array($entry->media->thumbnail) : $entry->media->thumbnail;
+				foreach ($thumbnails AS $thumbnail) {
+					$url = (string) $thumbnail->url;
+				$this->timelog($url);
+					break;
+				}
+			} elseif ($entry->media->content) {
+				// adjust for PHP4 single comment
+				$media_contents = class_exists("simplexml") && $entry->media->content->url ? array($entry->media->content) : $entry->media->content;
+				foreach ($media_contents AS $media_content) {
+					if (!$media_content->type) {
+						$url = (string) $media_content->url;
+					$this->timelog($url);
+						break;
+					}
+				}
+			} elseif ($entry->media->enclosure) {
+				// adjust for PHP4 single comment
+				$enclosures = class_exists("simplexml") && $entry->media->enclosure->url ? array($entry->media->enclosure) : $entry->media->enclosure;
+				foreach ($enclosures AS $enclosure) {
+					if ($enclosure->type && strpos((string) $enclosure->type, "image") === 0) {
+						// e.g. stumbleupon
+						$url = (string) $enclosure->url;	
+					$this->timelog($url);
+						break;
+					}
+				}
 			}
 
 			if (isset($url)) {
 				$media = "<img src=\"{$url}\" style=\"border:1px solid #CCCCCC;padding:1px;\" alt=\"Image\" />";
-				
+
 				if ($link = $entry->media->link) {
 					$media = "<a href=\"{$link}\">{$media}</a>";
 				}
