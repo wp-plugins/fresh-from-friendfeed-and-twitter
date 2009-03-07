@@ -1,6 +1,6 @@
 === Fresh From FriendFeed and Twitter ===
 Contributors: bob.hitching
-Donate link: http://www.redcross.org.au/vic/services_emergencyservices_victorian-bushfires-appeal-2009.htm
+Donate link: http://www.nangqiantibetanfoundation.com/
 Tags: FriendFeed, Twitter, Flickr, Facebook, Google, LinkedIn, YouTube, fresh, feed, lifestream, posts, plugin
 Requires at least: 2.0
 Tested up to: 2.7.1
@@ -16,21 +16,30 @@ Keeps your blog always fresh by regularly adding your latest and greatest conten
 [Demo](http://hitching.net) |
 [Support](http://friendfeed.com/rooms/fresh-from-friendfeed-and-twitter)
 
-= Features =
+= New in 1.1.x =
+
+* Mashup multiple feeds of fresh content from all your FriendFeed and Twitter accounts into your blog.
+* Also import content from FriendFeed Rooms and FriendFeed Search and (*NEW*) Twitter Search.
+* Choose to only import content containing a chosen hashtag e.g. #blog which becomes your mechanism to send your micro-blogging content to your blog.
+* Digest summary; per service, per user or all together.
+* 'Keep it Fresh' mode - simply show your latest and greatest content, regularly refreshed. Less is more.
+* 'Keep it Coming' mode - import content every day and keep it archived in your blog.
+
+= More features =
 
 * Automatically detects your FriendFeed and Twitter username; simple out-of-the-box install!
 * No external passwords are required because only public FriendFeed and Twitter APIs are used. 
 * Content is imported as regular blog posts which can be easily edited, tagged and kept; or simply leave Fresh From to automatically replace imported posts with fresher content when it becomes available.
 * Content is automatically enhanced in many ways, including Twitpic photos and embedded YouTube videos.
 
-= More Features =
+= And there's more... =
 
 * Includes SEO links to your FriendFeed, Twitter, Flickr, Facebook, Google, LinkedIn, YouTube, etc. profile pages.
 * A magic 'latest and greatest' formula is used to work out what to import. If you don't want to keep an imported post, simply delete it and Fresh From will automatically find some other content.
-* Choose to show between 1 and 10 imported posts; FriendFeed users can also choose how many posts are imported from each of their FriendFeed services (e.g. Flickr, Facebook, etc.)
+* Lots of control over how much content is imported; FriendFeed users can also choose how many posts are imported from each of their FriendFeed services (e.g. Flickr, Facebook, etc.)
 * External API limits are well respected, and API responses are cached by Fresh From to protect your site against FriendFeed and Twitter downtime.
 
-Note: Fresh From requires WordPress 2.0 or higher, running on PHP5.x with CURL.
+Note: Fresh From requires WordPress 2.3 or higher, running on PHP4 or PHP5, with CURL.
 
 == Installation ==
 
@@ -49,6 +58,19 @@ Note: Fresh From requires WordPress 2.0 or higher, running on PHP5.x with CURL.
 Here's the [Support Room](http://friendfeed.com/rooms/fresh-from-friendfeed-and-twitter) showing real-time, warts 'n' all, frequent and infrequent, questions and answers. If you cannot find the answer you need, please ask the question to the Room. Don't be shy.
 
 == Changelog ==
+
+= 1.1.0 =
+* Import FriendFeed Users, Comments, Likes, Rooms, and Search
+* Import Twitter Users and Search
+* Mashup multiple feeds
+* Filter import by keyword e.g. #blog
+* Import content as a digest per service, per user or all together
+* Keep it Fresh
+* Keep it Coming
+* Fixed: FriendFeed direct content now imported
+* Fixed: busy sites do not suffer from repeat imports
+* Works on PHP4 as well as PHP5
+* Ready for L10N multi-language support
 
 = 1.0.2 =
 * Import stumbleupon images
