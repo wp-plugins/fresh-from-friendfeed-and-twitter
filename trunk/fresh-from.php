@@ -3,12 +3,12 @@
 Plugin Name: Fresh From FriendFeed and Twitter
 Plugin URI: http://wordpress.org/extend/plugins/fresh-from-friendfeed-and-twitter/
 Description: Keeps your blog always fresh by regularly adding your latest and greatest content from FriendFeed or Twitter. Content is imported as normal blog posts that you can edit and keep if you want. No external passwords required.
-Version: 1.1.0
+Version: 1.1.1
 Author: Bob Hitching
 Author URI: http://hitching.net/fresh-from-friendfeed-and-twitter
 */
 
-define("_ffff_version", "1.1.0");
+define("_ffff_version", "1.1.1");
 define("_ffff_debug", false);
 define("_ffff_debug_email", "bob@hitching.net");
 define("_ffff_friendfeed_bot", "FriendFeedBot"); // user agent of Friendfeed Bot - so we can hide Fresh posts and avoid crashing the internet with an infinite loop
@@ -541,7 +541,7 @@ class freshfrom {
 			}
 			
 			// check filter for #blog
-			if ($ffff_filter && strpos($post->post_content, $ffff_keyword) === false) {
+			if ($ffff_filter && $ffff_keyword && strpos($post->post_content, $ffff_keyword) === false) {
 				$this->timelog("{$ffff_keyword} not found; skipping post " . $post->meta["_ffff_external_id"]);
 				continue;
 			}
@@ -1016,7 +1016,7 @@ EOF;
 			// bit.ly thumbnails - easter egg - doesn't work on custom bit.ly URLs yet
 			if (strpos($url_components["host"], "bit.ly") !== false) {
 				$bitly_img = str_replace("bit.ly", "s.bit.ly/bitly", $url) . "/thumbnail_medium.png";
-				$post->media_content = "<a href=\"{$url}\"><img src=\"{$bitly_img}\" style=\"border:1px solid #CCCCCC;padding:1px;\" alt=\"bit.ly thumbnail\" /></a>";
+				$post->media_content = "<a href=\"{$url}\"><img src=\"{$bitly_img}\" style=\"border:1px solid #CCCCCC;padding:1px;\" alt=\"{$url}\" /></a>";
 			}
 			
 			// please submit a feature request if you want to see other content enhancements!
@@ -2123,12 +2123,13 @@ EOF;
 		if (isset($xml->status)) $xml = $xml->status;
 	
 		$ffff_users = get_option("ffff_users");
+		$twitter_pics = get_option("ffff_twitter_pics");
 	
 		// add user items
 		foreach ($xml AS $entry) {				
 			// safety net: if API has unexpected response
 			if (!isset($entry->id)) continue;
-		
+
 			// twitter date format  Thu Feb 05 10:01:56 +0000 2009, wp 2009-01-06 13:05:33
 			// remove timezone offset for PHP4 strtotime
 			$time_parts = explode(" ", $entry->created_at);
@@ -2144,9 +2145,9 @@ EOF;
 			// add to ffff_users if this is a new user_error (only with User API calls) - and grab profile photo while we're here
 			if (strpos($feed["api"], "/user_timeline/") && !isset($ffff_users["twitter_" . $entry->screen_name])) {
 				$ffff_users["twitter_" . $entry->screen_name] = _ffff_unlimited; // unlimited
-				if (!isset($twitter_pics[$entry->screen_name])) {
-					$twitter_pics[$entry->screen_name] = array("expiry"=>time()+_ffff_twitter_pics_ttl, "url"=>$entry->profile_image_url);
-					update_option("ffff_twitter_pics", $twitter_pics);			
+				if (!isset($twitter_pics[(string) $entry->screen_name])) {
+					$twitter_pics[(string) $entry->screen_name] = array("expiry"=>time()+_ffff_twitter_pics_ttl, "url"=>(string) $entry->profile_image_url);
+					update_option("ffff_twitter_pics", $twitter_pics);
 				}
 			}
 
