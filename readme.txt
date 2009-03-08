@@ -2,9 +2,9 @@
 Contributors: bob.hitching
 Donate link: http://www.nangqiantibetanfoundation.com/
 Tags: FriendFeed, Twitter, Flickr, Facebook, Google, LinkedIn, YouTube, fresh, feed, lifestream, posts, plugin
-Requires at least: 2.0
+Requires at least: 2.3
 Tested up to: 2.7.1
-Stable tag: 1.0.2
+Stable tag: 1.1.1
 
 Keeps your blog always fresh by regularly adding your latest and greatest content from FriendFeed or Twitter. No external passwords required!
 
@@ -12,11 +12,11 @@ Keeps your blog always fresh by regularly adding your latest and greatest conten
 
 Keeps your blog always fresh by regularly adding your latest and greatest content from FriendFeed or Twitter. No external passwords required!
 
-[Download](http://downloads.wordpress.org/plugin/fresh-from-friendfeed-and-twitter.1.0.2.zip) |
+[Download](http://downloads.wordpress.org/plugin/fresh-from-friendfeed-and-twitter.1.1.1.zip) |
 [Demo](http://hitching.net) |
 [Support](http://friendfeed.com/rooms/fresh-from-friendfeed-and-twitter)
 
-= New in 1.1.x =
+= New in 1.1.1 =
 
 * Mashup multiple feeds of fresh content from all your FriendFeed and Twitter accounts into your blog.
 * Also import content from FriendFeed Rooms and FriendFeed Search and (*NEW*) Twitter Search.
@@ -59,7 +59,7 @@ Here's the [Support Room](http://friendfeed.com/rooms/fresh-from-friendfeed-and-
 
 == Changelog ==
 
-= 1.1.0 =
+= 1.1.1 =
 * Import FriendFeed Users, Comments, Likes, Rooms, and Search
 * Import Twitter Users and Search
 * Mashup multiple feeds
@@ -69,6 +69,7 @@ Here's the [Support Room](http://friendfeed.com/rooms/fresh-from-friendfeed-and-
 * Keep it Coming
 * Fixed: FriendFeed direct content now imported
 * Fixed: busy sites do not suffer from repeat imports
+* Fixed: images no longer inserted into titles breaking funky themes
 * Works on PHP4 as well as PHP5
 * Ready for i18n multi-language support
 
