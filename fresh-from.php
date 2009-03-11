@@ -3,12 +3,12 @@
 Plugin Name: Fresh From FriendFeed and Twitter
 Plugin URI: http://wordpress.org/extend/plugins/fresh-from-friendfeed-and-twitter/
 Description: Keeps your blog always fresh by regularly adding your latest and greatest content from FriendFeed or Twitter. Content is imported as normal blog posts that you can edit and keep if you want. No external passwords required.
-Version: 1.1.1
+Version: 1.1.2
 Author: Bob Hitching
 Author URI: http://hitching.net/fresh-from-friendfeed-and-twitter
 */
 
-define("_ffff_version", "1.1.1");
+define("_ffff_version", "1.1.2");
 define("_ffff_debug", false);
 define("_ffff_debug_email", "bob@hitching.net");
 define("_ffff_friendfeed_bot", "FriendFeedBot"); // user agent of Friendfeed Bot - so we can hide Fresh posts and avoid crashing the internet with an infinite loop
@@ -1026,9 +1026,9 @@ EOF;
 		if ($post->media_content) {
 			// media content
 			if (strpos($post->post_content, _ffff_media_token) !== false) {
-				$content = str_replace(_ffff_media_token, "<br clear=\"both\" />" . $post->media_content, $post->post_content) . "<br/>";
+				$content = str_replace(_ffff_media_token, $post->media_content, $post->post_content) . "<br/>";
 			} else {
-				$content .= "<br clear=\"both\" />" . $post->media_content . "<br/>";
+				$content .= $post->media_content . "<br/>";
 			}
 		}			
 		
@@ -1112,7 +1112,7 @@ EOF;
 			// add a plug
 			if (!isset($GLOBALS["ffff_plugged"]) && strpos($custom_fields["_ffff_external_id"][0], "digest") === 0 && count($custom_fields["_ffff_digested"]) > 1) {
 				$link = "<a href=\"" . _ffff_freshfrom_url . "\" style=\"color:#CCCCCC\">Fresh From</a>";
-				$content .= "<br clear=\"both\"><div style=\"font-size:80%;color:#CCCCCC;margin-top:10px;\">" . sprintf(__("Powered by %s", _ffff_lang_domain), $link) . "</div>";				
+				$content .= "<div style=\"font-size:80%;color:#CCCCCC;margin-top:5px;\">" . sprintf(__("Powered by %s", _ffff_lang_domain), $link) . "</div>";				
 				$GLOBALS["ffff_plugged"] = true;
 			}
 		}
@@ -1965,7 +1965,7 @@ EOF;
 			$tooltip = (string) $entry->user->name;
 			$media = "<img src=\"http://friendfeed.com/{$obj->nickname}/picture?size=medium\" border=\"0\" align=\"left\" style=\"margin-right:5px;margin-bottom:5px;\" />";	
 			$profile_pic = "<a href=\"{$link}\" title=\"{$tooltip}\">{$media}</a>";
-			$content = "<span style=\"position:relative;float:left;\">{$profile_pic}{$service_icon}{$title}</span>";		
+			$content = "<span style=\"position:relative;float:left;\">{$profile_pic}{$service_icon}{$title}</span><br clear=\"both\" />";		
 		} else {
 			$content = $service_icon . " " . $title;
 		}
@@ -1977,7 +1977,6 @@ EOF;
 				$thumbnails = class_exists("simplexml") && $entry->media->thumbnail->url ? array($entry->media->thumbnail) : $entry->media->thumbnail;
 				foreach ($thumbnails AS $thumbnail) {
 					$url = (string) $thumbnail->url;
-				$this->timelog($url);
 					break;
 				}
 			} elseif ($entry->media->content) {
@@ -1986,7 +1985,6 @@ EOF;
 				foreach ($media_contents AS $media_content) {
 					if (!$media_content->type) {
 						$url = (string) $media_content->url;
-					$this->timelog($url);
 						break;
 					}
 				}
@@ -1997,7 +1995,6 @@ EOF;
 					if ($enclosure->type && strpos((string) $enclosure->type, "image") === 0) {
 						// e.g. stumbleupon
 						$url = (string) $enclosure->url;	
-					$this->timelog($url);
 						break;
 					}
 				}
@@ -2018,13 +2015,12 @@ EOF;
 
 		// spin through comments
 		if (isset($entry->comment)) {
-			$content .= "<br clear=\"both\" />";
 			// adjust for PHP4 single comment
 			$comments = class_exists("simplexml") && isset($entry->comment->id) ? array($entry->comment) : $entry->comment;
 			foreach ($comments AS $comment) {
 				if (!isset($comment->id)) continue;
 				if (isset($ffff_users["friendfeed_" . $comment->user->nickname])) {
-					$content .= "<img src=\"http://friendfeed.com/static/images/comment-friend.png\" align=\"baseline\" /> " . $comment->body . "<br/>";
+					$content .= "<img src=\"http://friendfeed.com/static/images/comment-friend.png\" align=\"baseline\" style=\"margin:0px;float:none;\" /> " . $comment->body . "<br/>";
 
 					// update author to commenter
 					$entry->author = (string) $comment->user->name;
@@ -2182,7 +2178,7 @@ EOF;
 			$link = "http://twitter.com/" . $entry->screen_name;
 			$media = "<img src=\"{$entry->profile_image_url}\" border=\"0\" width=\"48\" align=\"left\" style=\"margin-right:5px;margin-bottom:5px\" />";	
 			$profile_pic = "<a href=\"{$link}\" title=\"" . $entry->screen_name . "\">{$media}</a>";
-			$content = "<span style=\"position:relative;float:left;\">{$profile_pic}{$service_icon}{$tweet}</span>";		
+			$content = "<span style=\"position:relative;float:left;\">{$profile_pic}{$service_icon}{$tweet}</span><br clear=\"both\" />";		
 		} else {
 			$content = $service_icon . " " . $tweet;
 		}
