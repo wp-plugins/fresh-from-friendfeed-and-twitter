@@ -4,7 +4,7 @@ Donate link: http://www.nangqiantibetanfoundation.com/
 Tags: FriendFeed, Twitter, Flickr, Facebook, Google, LinkedIn, YouTube, fresh, feed, lifestream, posts, plugin
 Requires at least: 2.3
 Tested up to: 2.7.1
-Stable tag: 1.1.1
+Stable tag: 1.1.2
 
 Keeps your blog always fresh by regularly adding your latest and greatest content from FriendFeed or Twitter. No external passwords required!
 
@@ -16,7 +16,7 @@ Keeps your blog always fresh by regularly adding your latest and greatest conten
 [Demo](http://hitching.net) |
 [Support](http://friendfeed.com/rooms/fresh-from-friendfeed-and-twitter)
 
-= New in 1.1.1 =
+= New in 1.1.x =
 
 * Mashup multiple feeds of fresh content from all your FriendFeed and Twitter accounts into your blog.
 * Also import content from FriendFeed Rooms and FriendFeed Search and (*NEW*) Twitter Search.
@@ -58,6 +58,9 @@ Note: Fresh From requires WordPress 2.3 or higher, running on PHP4 or PHP5, with
 Here's the [Support Room](http://friendfeed.com/rooms/fresh-from-friendfeed-and-twitter) showing real-time, warts 'n' all, frequent and infrequent, questions and answers. If you cannot find the answer you need, please ask the question to the Room. Don't be shy.
 
 == Changelog ==
+
+= 1.1.2 =
+* Fixed: CSS display glitches when used with other plugins
 
 = 1.1.1 =
 * Import FriendFeed Users, Comments, Likes, Rooms, and Search
