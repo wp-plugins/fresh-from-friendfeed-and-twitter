@@ -3,12 +3,12 @@
 Plugin Name: Fresh From FriendFeed and Twitter
 Plugin URI: http://wordpress.org/extend/plugins/fresh-from-friendfeed-and-twitter/
 Description: Keeps your blog always fresh by regularly adding your latest and greatest content from FriendFeed or Twitter. Content is imported as normal blog posts that you can edit and keep if you want. No external passwords required.
-Version: 1.1.2
+Version: 1.1.3
 Author: Bob Hitching
 Author URI: http://hitching.net/fresh-from-friendfeed-and-twitter
 */
 
-define("_ffff_version", "1.1.2");
+define("_ffff_version", "1.1.3");
 define("_ffff_debug", false);
 define("_ffff_debug_email", "bob@hitching.net");
 define("_ffff_friendfeed_bot", "FriendFeedBot"); // user agent of Friendfeed Bot - so we can hide Fresh posts and avoid crashing the internet with an infinite loop
@@ -65,7 +65,7 @@ class freshfrom {
 		$this->start_ts = time();
 	
 		// reset on new install or upgrade
-		if (!get_option("ffff_version") || version_compare(get_option("ffff_version"), _ffff_version, "<")) {
+		if (!get_option("ffff_version") || version_compare(get_option("ffff_version"), "1.1", "<")) {
 			$this->reset();
 		}
 		
@@ -824,6 +824,18 @@ class freshfrom {
 			$this->timelog("Updated post {$post->meta["_ffff_external_id"]} => {$post_id}");
 		}		
 		
+		// cleanup delete any inherit revisions
+		$result = $wpdb->get_results("SELECT ID FROM {$wpdb->posts}
+			WHERE post_status='inherit'
+			AND post_parent IN (SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key = 'FreshFrom')");
+		foreach ($result AS $post) {
+			$post_id = $post->ID;
+			wp_delete_post($post_id);
+			$this->timelog("Deleted post revision " . $post_id);			
+		}
+		$wpdb->get_results("OPTIMIZE TABLE {$wpdb->posts}");
+		$wpdb->get_results("OPTIMIZE TABLE {$wpdb->postmeta}");
+		
 		// phew, all done, some other request can have a go now
 		update_option("ffff_busy_until", 0);
 	}
@@ -1026,7 +1038,7 @@ EOF;
 		if ($post->media_content) {
 			// media content
 			if (strpos($post->post_content, _ffff_media_token) !== false) {
-				$content = str_replace(_ffff_media_token, $post->media_content, $post->post_content) . "<br/>";
+				$content = str_replace(_ffff_media_token, $post->media_content . "<br clear=\"both\" />", $post->post_content);
 			} else {
 				$content .= $post->media_content . "<br/>";
 			}
@@ -1902,7 +1914,7 @@ EOF;
 			$post = $this->get_friendfeed_post($entry, $ffff_users);
 			
 			// add to ffff_friendfeed_services if this is a new service (only with User API calls)
-			if ((strpos($feed["api"], "/user/") && !strpos($feed["api"], "/", 36)) || strpos($feed["api"], "/room/")) {
+			if ($post->meta["_ffff_service_name"] == "FriendFeed" || (strpos($feed["api"], "/user/") && !strpos($feed["api"], "/", 36)) || strpos($feed["api"], "/room/")) {
 				if (!isset($ffff_friendfeed_services[$post->meta["_ffff_service_name"]])) {
 					if ($post->meta["_ffff_profileUrl"] == get_option("siteurl")) $mix = 0; // none of these in case we break the internet
 					elseif (in_array($post->meta["_ffff_service_name"], array("Twitter", "Facebook"))) $mix = 2; // heavyweights
@@ -1911,8 +1923,10 @@ EOF;
 					
 					$ffff_friendfeed_services[$post->meta["_ffff_service_name"]] = array("mix"=>$mix, "iconUrl"=>$post->meta["_ffff_iconUrl"]);
 				}
-				
-				// add to ffff_users if this is a new user  (only with User API calls)
+			}
+
+			// add to ffff_users if this is a new user  (only with User API calls)
+			if ((strpos($feed["api"], "/user/") && !strpos($feed["api"], "/", 36)) || strpos($feed["api"], "/room/")) {
 				if (!isset($ffff_users["friendfeed_" . $post->nickname])) {
 					$ffff_users["friendfeed_" . $post->nickname] = _ffff_unlimited; // unlimited
 				}
