@@ -4,7 +4,7 @@ Donate link: http://www.nangqiantibetanfoundation.com/
 Tags: FriendFeed, Twitter, Flickr, Facebook, Google, LinkedIn, YouTube, fresh, feed, lifestream, posts, plugin
 Requires at least: 2.3
 Tested up to: 2.7.1
-Stable tag: 1.1.2
+Stable tag: 1.1.3
 
 Keeps your blog always fresh by regularly adding your latest and greatest content from FriendFeed or Twitter. No external passwords required!
 
@@ -12,7 +12,7 @@ Keeps your blog always fresh by regularly adding your latest and greatest conten
 
 Keeps your blog always fresh by regularly adding your latest and greatest content from FriendFeed or Twitter. No external passwords required!
 
-[Download](http://downloads.wordpress.org/plugin/fresh-from-friendfeed-and-twitter.1.1.2.zip) |
+[Download](http://downloads.wordpress.org/plugin/fresh-from-friendfeed-and-twitter.1.1.3.zip) |
 [Demo](http://hitching.net) |
 [Support](http://friendfeed.com/rooms/fresh-from-friendfeed-and-twitter)
 
@@ -58,6 +58,11 @@ Note: Fresh From requires WordPress 2.3 or higher, running on PHP4 or PHP5, with
 Here's the [Support Room](http://friendfeed.com/rooms/fresh-from-friendfeed-and-twitter) showing real-time, warts 'n' all, frequent and infrequent, questions and answers. If you cannot find the answer you need, please ask the question to the Room. Don't be shy.
 
 == Changelog ==
+
+= 1.1.3 =
+* Fixed: another CSS glitch; br/clear after photos
+* Cleanup interim posts after update
+* Allow direct FriendFeed comments to be un/limited
 
 = 1.1.2 =
 * Fixed: CSS display glitches when used with other plugins
