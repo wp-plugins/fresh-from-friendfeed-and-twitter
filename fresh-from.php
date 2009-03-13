@@ -9,7 +9,7 @@ Author URI: http://hitching.net/fresh-from-friendfeed-and-twitter
 */
 
 define("_ffff_version", "1.1.3");
-define("_ffff_debug", false);
+define("_ffff_debug", true);
 define("_ffff_debug_email", "bob@hitching.net");
 define("_ffff_friendfeed_bot", "FriendFeedBot"); // user agent of Friendfeed Bot - so we can hide Fresh posts and avoid crashing the internet with an infinite loop
 define("_ffff_support_room", "http://friendfeed.com/rooms/fresh-from-friendfeed-and-twitter"); // where to go for help and discussion
@@ -1040,7 +1040,7 @@ EOF;
 			if (strpos($post->post_content, _ffff_media_token) !== false) {
 				$content = str_replace(_ffff_media_token, $post->media_content . "<br clear=\"both\" />", $post->post_content);
 			} else {
-				$content .= $post->media_content . "<br/>";
+				$content .= $post->media_content . "<br clear=\"both\" />";
 			}
 		}			
 		
@@ -1299,7 +1299,7 @@ EOF;
 		$ffff_friendfeed_services = get_option("ffff_friendfeed_services");
 		foreach ($_POST AS $key=>$value) {
 			if (strpos($key, "ffff_friendfeed_service_mix") === 0) {
-				$service_id = array_pop(explode("_", $key));
+				$service_id = array_pop(explode("_", $key, 2));
 				$service_name = $_POST["ffff_friendfeed_service_name_" . $service_id];
 				if (isset($ffff_friendfeed_services[$service_name])) $ffff_friendfeed_services[$service_name]["mix"] = $value;
 			}
@@ -1503,7 +1503,7 @@ EOF;
 			}
 			$selector .= "</select>";
 
-			list($service, $username) = explode("_", $service_username);
+			list($service, $username) = explode("_", $service_username, 2);
 			if ($service == "friendfeed") {
 				$icon = "<img src=\"http://friendfeed.com/static/images/icons/internal.png\" />";
 				$profile = "<img src=\"http://friendfeed.com/{$username}/picture?size=small\" />";
