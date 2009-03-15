@@ -3,13 +3,29 @@
 Plugin Name: Fresh From FriendFeed and Twitter
 Plugin URI: http://wordpress.org/extend/plugins/fresh-from-friendfeed-and-twitter/
 Description: Keeps your blog always fresh by regularly adding your latest and greatest content from FriendFeed or Twitter. Content is imported as normal blog posts that you can edit and keep if you want. No external passwords required.
-Version: 1.1.3
+Version: 1.1.4
 Author: Bob Hitching
 Author URI: http://hitching.net/fresh-from-friendfeed-and-twitter
+
+Copyright (c) 2009 Bob Hitching (bob@hitching.net)
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-define("_ffff_version", "1.1.3");
-define("_ffff_debug", true);
+define("_ffff_version", "1.1.4");
+define("_ffff_debug", false);
 define("_ffff_debug_email", "bob@hitching.net");
 define("_ffff_friendfeed_bot", "FriendFeedBot"); // user agent of Friendfeed Bot - so we can hide Fresh posts and avoid crashing the internet with an infinite loop
 define("_ffff_support_room", "http://friendfeed.com/rooms/fresh-from-friendfeed-and-twitter"); // where to go for help and discussion

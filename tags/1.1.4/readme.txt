@@ -59,6 +59,10 @@ Here's the [Support Room](http://friendfeed.com/rooms/fresh-from-friendfeed-and-
 
 == Changelog ==
 
+= 1.1.4 =
+* Fixed: underscore in twitter username was showing wrong avatar
+* Fixed: br/clear after photos
+
 = 1.1.3 =
 * Fixed: another CSS glitch; br/clear after photos
 * Cleanup interim posts after update
