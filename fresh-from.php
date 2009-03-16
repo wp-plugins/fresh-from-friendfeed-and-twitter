@@ -3,7 +3,7 @@
 Plugin Name: Fresh From FriendFeed and Twitter
 Plugin URI: http://wordpress.org/extend/plugins/fresh-from-friendfeed-and-twitter/
 Description: Keeps your blog always fresh by regularly adding your latest and greatest content from FriendFeed or Twitter. Content is imported as normal blog posts that you can edit and keep if you want. No external passwords required.
-Version: 1.1.4
+Version: 1.1.5
 Author: Bob Hitching
 Author URI: http://hitching.net/fresh-from-friendfeed-and-twitter
 
@@ -24,7 +24,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-define("_ffff_version", "1.1.4");
+define("_ffff_version", "1.1.5");
 define("_ffff_debug", false);
 define("_ffff_debug_email", "bob@hitching.net");
 define("_ffff_friendfeed_bot", "FriendFeedBot"); // user agent of Friendfeed Bot - so we can hide Fresh posts and avoid crashing the internet with an infinite loop
@@ -1315,7 +1315,7 @@ EOF;
 		$ffff_friendfeed_services = get_option("ffff_friendfeed_services");
 		foreach ($_POST AS $key=>$value) {
 			if (strpos($key, "ffff_friendfeed_service_mix") === 0) {
-				$service_id = array_pop(explode("_", $key, 2));
+				$service_id = array_pop(explode("_", $key));
 				$service_name = $_POST["ffff_friendfeed_service_name_" . $service_id];
 				if (isset($ffff_friendfeed_services[$service_name])) $ffff_friendfeed_services[$service_name]["mix"] = $value;
 			}
