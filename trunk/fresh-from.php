@@ -3,7 +3,7 @@
 Plugin Name: Fresh From FriendFeed and Twitter
 Plugin URI: http://wordpress.org/extend/plugins/fresh-from-friendfeed-and-twitter/
 Description: Keeps your blog always fresh by regularly adding your latest and greatest content from FriendFeed or Twitter. Content is imported as normal blog posts that you can edit and keep if you want. No external passwords required.
-Version: 1.1.5
+Version: 1.1.6
 Author: Bob Hitching
 Author URI: http://hitching.net/fresh-from-friendfeed-and-twitter
 
@@ -24,7 +24,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-define("_ffff_version", "1.1.5");
+define("_ffff_version", "1.1.6");
 define("_ffff_debug", false);
 define("_ffff_debug_email", "bob@hitching.net");
 define("_ffff_friendfeed_bot", "FriendFeedBot"); // user agent of Friendfeed Bot - so we can hide Fresh posts and avoid crashing the internet with an infinite loop
@@ -81,8 +81,11 @@ class freshfrom {
 		$this->start_ts = time();
 	
 		// reset on new install or upgrade
-		if (!get_option("ffff_version") || version_compare(get_option("ffff_version"), "1.1", "<")) {
+		$ffff_version = get_option("ffff_version");
+		if (!$ffff_version || version_compare($ffff_version, "1.1", "<")) {
 			$this->reset();
+		} elseif ($ffff_version != _ffff_version) {
+			update_option("ffff_version", _ffff_version);
 		}
 		
 		// setup L10N
@@ -799,6 +802,12 @@ class freshfrom {
 			$this->timelog("Deleted post {$external_id} => " . $post_id);
 		}
 		
+		// disable revisions
+		remove_action('pre_post_update', 'wp_save_post_revision');
+		
+		// remove kses
+		remove_filter('content_save_pre', 'wp_filter_post_kses');
+		
 		// add what needs to be added
 		foreach ($posts_insert AS $post) {
 			// add post
@@ -840,7 +849,7 @@ class freshfrom {
 			$this->timelog("Updated post {$post->meta["_ffff_external_id"]} => {$post_id}");
 		}		
 		
-		// cleanup delete any inherit revisions
+		// cleanup any inherit revisions if removing wp_save_post_revision didn't work
 		$result = $wpdb->get_results("SELECT ID FROM {$wpdb->posts}
 			WHERE post_status='inherit'
 			AND post_parent IN (SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key = 'FreshFrom')");
@@ -1024,6 +1033,7 @@ class freshfrom {
 		// add media content
 		$ffff_twitpic = get_option("ffff_twitpic");
 		$ffff_youtube = get_option("ffff_youtube");
+
 		foreach ($urls AS $url) {
 			$url_components = parse_url($url);
 			if ($ffff_twitpic && strpos($url_components["host"], "twitpic.com") !== false) {
@@ -1043,8 +1053,25 @@ EOF;
 			
 			// bit.ly thumbnails - easter egg - doesn't work on custom bit.ly URLs yet
 			if (strpos($url_components["host"], "bit.ly") !== false) {
-				$bitly_img = str_replace("bit.ly", "s.bit.ly/bitly", $url) . "/thumbnail_medium.png";
-				$post->media_content = "<a href=\"{$url}\"><img src=\"{$bitly_img}\" style=\"border:1px solid #CCCCCC;padding:1px;\" alt=\"{$url}\" /></a>";
+				if (!isset($GLOBALS["_ffff_bitly_content_length"][$url])) {
+					$bitly_img = str_replace("bit.ly", "s.bit.ly/bitly", $url) . "/thumbnail_medium.png";
+					
+					// just get the header, content length 
+					$this->timelog("Checking " . $bitly_img);
+					$ch = curl_init();
+					curl_setopt($ch, CURLOPT_URL, $bitly_img);
+					curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false);
+					curl_setopt($ch, CURLOPT_HEADER, true);
+					curl_setopt($ch, CURLOPT_NOBODY, true);
+					curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+					$headers = curl_exec($ch);
+					$GLOBALS["_ffff_bitly_content_length"][$url] = curl_getinfo($ch, CURLINFO_CONTENT_LENGTH_DOWNLOAD);
+					curl_close($ch);
+				}
+				
+				if ($GLOBALS["_ffff_bitly_content_length"][$url] > 1000) {
+					$post->media_content = "<a href=\"{$url}\"><img src=\"{$bitly_img}\" style=\"border:1px solid #CCCCCC;padding:1px;\" alt=\"{$alt}\" /></a>";
+				}
 			}
 			
 			// please submit a feature request if you want to see other content enhancements!
@@ -1052,7 +1079,7 @@ EOF;
 		
 		// show the bestest enhancement - video scores over thumbnail
 		if ($post->media_content) {
-			// media content
+			// media content	
 			if (strpos($post->post_content, _ffff_media_token) !== false) {
 				$content = str_replace(_ffff_media_token, $post->media_content . "<br clear=\"both\" />", $post->post_content);
 			} else {
@@ -1997,9 +2024,9 @@ EOF;
 			$profile_pic = "<a href=\"{$link}\" title=\"{$tooltip}\">{$media}</a>";
 			$content = "<span style=\"position:relative;float:left;\">{$profile_pic}{$service_icon}{$title}</span><br clear=\"both\" />";		
 		} else {
-			$content = $service_icon . " " . $title;
+			$content = $service_icon . " " . $title . "<br clear=\"both\" />";
 		}
-		
+
 		// extract any media thumbnail
 		if ($entry->media) {
 			if ($entry->media->thumbnail) {
