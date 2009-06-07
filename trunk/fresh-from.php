@@ -3,7 +3,7 @@
 Plugin Name: Fresh From FriendFeed and Twitter
 Plugin URI: http://wordpress.org/extend/plugins/fresh-from-friendfeed-and-twitter/
 Description: Keeps your blog always fresh by regularly adding your latest and greatest content from FriendFeed or Twitter. Content is imported as normal blog posts that you can edit and keep if you want. No external passwords required.
-Version: 1.1.6
+Version: 1.1.7
 Author: Bob Hitching
 Author URI: http://hitching.net/fresh-from-friendfeed-and-twitter
 
@@ -24,7 +24,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-define("_ffff_version", "1.1.6");
+define("_ffff_version", "1.1.7");
 define("_ffff_debug", false);
 define("_ffff_debug_email", "bob@hitching.net");
 define("_ffff_friendfeed_bot", "FriendFeedBot"); // user agent of Friendfeed Bot - so we can hide Fresh posts and avoid crashing the internet with an infinite loop
@@ -80,6 +80,10 @@ class freshfrom {
 	function freshfrom() {
 		$this->start_ts = time();
 	
+		// setup L10N
+		$plugin_dir = basename(dirname(__FILE__));
+		load_plugin_textdomain(_ffff_lang_domain, 'wp-content/plugins/' . $plugin_dir, $plugin_dir);
+
 		// reset on new install or upgrade
 		$ffff_version = get_option("ffff_version");
 		if (!$ffff_version || version_compare($ffff_version, "1.1", "<")) {
@@ -88,10 +92,6 @@ class freshfrom {
 			update_option("ffff_version", _ffff_version);
 		}
 		
-		// setup L10N
-		$plugin_dir = basename(dirname(__FILE__));
-		load_plugin_textdomain(_ffff_lang_domain, 'wp-content/plugins/' . $plugin_dir, $plugin_dir);
-
 		// admin layout
 		if (version_compare($GLOBALS["wp_version"], "2.7", ">=")) {
 			$this->admin_style = 27;
@@ -138,6 +138,9 @@ class freshfrom {
 		update_option("ffff_twitpic", 1);
 		update_option("ffff_youtube", 1);
 		update_option("ffff_rss", "");
+		// 1.1.7 prefix options
+		update_option("ffff_prefix", "");
+		update_option("ffff_prefix_string", __("Fresh From", _ffff_lang_domain) . " %s");
 		
 		// update version number
 		update_option("ffff_version", _ffff_version);
@@ -648,10 +651,14 @@ class freshfrom {
 					$post_title = $post->post_title;
 				} elseif ($ffff_digest_type == "user") {
 					$digest_key = "digest.user." . $post->meta["_ffff_service"] . "_" . $post->meta["_ffff_username"];
-					$post_title = __("Fresh From", _ffff_lang_domain) . " " . $post->meta["_ffff_service"] . ".com/" . $post->meta["_ffff_username"];
+					// 1.1.7 overwrite title prefix
+					if (get_option("ffff_prefix")) $post_title = str_replace("%s", $post->meta["_ffff_service"] . ".com/" . $post->meta["_ffff_username"], get_option("ffff_prefix_string"));
+					else $post_title = __("Fresh From", _ffff_lang_domain) . " " . $post->meta["_ffff_service"] . ".com/" . $post->meta["_ffff_username"];
 				} else {
 					$digest_key = "digest.all";
-					$post_title = __("Fresh From", _ffff_lang_domain) . " " . implode(" and ", array_keys($digest_title));
+					// 1.1.7 overwrite title prefix
+					if (get_option("ffff_prefix")) $post_title = str_replace("%s", implode(" and ", array_keys($digest_title)), get_option("ffff_prefix_string"));
+					else $post_title = __("Fresh From", _ffff_lang_domain) . " " . implode(" and ", array_keys($digest_title));
 				}
 
 				// keep it coming - need to add date key into unique key
@@ -701,8 +708,16 @@ class freshfrom {
 			foreach ($keepers AS $post) {
 				// add rss_subtitle of first two words
 				$sub_words = explode(" ", trim(strip_tags($post->post_content)));
-				$rss_subtitle = implode(" ", array_slice($sub_words, 0, 3)) . (count($sub_words) > 3 ? " ..." : "");
-				$post->post_title .= ": " . $rss_subtitle;
+				
+				// 1.1.7 adapt if empty prefix string
+				if (get_option("ffff_prefix") && !get_option("ffff_prefix_string")) {
+					$subtitle_words = 5;
+				} else {
+					$subtitle_words = 3;
+					$post->post_title .= ": ";
+				}
+				$rss_subtitle = implode(" ", array_slice($sub_words, 0, $subtitle_words)) . (count($sub_words) > $subtitle_words ? " ..." : "");
+				$post->post_title .= $rss_subtitle;
 				
 				// enhance content here, so video can trump thumbnails
 				$post->post_content = $this->transform_content($post);
@@ -1385,6 +1400,8 @@ EOF;
 			update_option("ffff_twitpic", $_POST["ffff_twitpic"]);
 			update_option("ffff_youtube", $_POST["ffff_youtube"]);
 			update_option("ffff_rss", $_POST["ffff_rss"]);
+			update_option("ffff_prefix", $_POST["ffff_prefix"]);
+			update_option("ffff_prefix_string", $_POST["ffff_prefix_string"]);
 		}
 
 		$ffff_mode = get_option("ffff_mode");
@@ -1624,6 +1641,9 @@ EOF;
 		$control["twitpic"] = "<p><input type=\"checkbox\" id=\"ffff_twitpic\" name=\"ffff_twitpic\" " . (get_option("ffff_twitpic") ? "checked=\"checked\" " : "") . "/> <label for=\"ffff_twitpic\">" . __("Show images from Twitpic links", _ffff_lang_domain) . "</label></p>";		
 		$control["youtube"] = "<p><input type=\"checkbox\" id=\"ffff_youtube\" name=\"ffff_youtube\" " . (get_option("ffff_youtube") ? "checked=\"checked\" " : "") . "/> <label for=\"ffff_youtube\">" . __("Show videos from Youtube links", _ffff_lang_domain) . "</label></p>";
 		$control["rss"] = "<p><input type=\"checkbox\" id=\"ffff_rss\" name=\"ffff_rss\" " . (get_option("ffff_rss") ? "checked=\"checked\" " : "") . "/> <label for=\"ffff_rss\">" . __("Show Fresh From posts in my RSS feeds", _ffff_lang_domain) . "</label></p>";
+		
+		// 1.1.7 new prefix options
+		$control["prefix"] = "<p><input type=\"checkbox\" id=\"ffff_prefix\" onChange=\"if(this.checked && !this.form.ffff_prefix_string.value){this.form.ffff_prefix_string.value='Fresh From %s'}\" name=\"ffff_prefix\" " . (get_option("ffff_prefix") ? "checked=\"checked\" " : "") . "/> <label for=\"ffff_prefix\">" . __("Overwrite post title prefix:", _ffff_lang_domain) . "</label> <input type=\"text\" name=\"ffff_prefix_string\" value=\"" . get_option("ffff_prefix_string") . "\" style=\"width:300px;\" /> %s = service name (e.g. Twitter)</p>";
 
 		echo <<<EOF
 <div class="wrap">
@@ -1680,6 +1700,7 @@ EOF;
 		echo $control["twitpic"];
 		echo $control["youtube"];
 		echo $control["rss"];
+		echo $control["prefix"];
 		$this->HtmlPrintBoxFooter();
 
 		echo '</div></div><p class="submit"><input type="submit" name="Submit" value="' . __("Update Options", _ffff_lang_domain) . ' &raquo;" /></p></div></form>';
@@ -1996,7 +2017,10 @@ EOF;
 		$obj = $this->get_post($post_date);
 
 		$service_name = $this->get_service_name($entry->service);
-		$obj->post_title = __("Fresh From", _ffff_lang_domain) . " " . $service_name;
+		
+		// 1.1.7 overwrite title prefix
+		if (get_option("ffff_prefix")) $obj->post_title = str_replace("%s", $service_name, get_option("ffff_prefix_string"));
+		else $obj->post_title = __("Fresh From", _ffff_lang_domain) . " " . $service_name;
 	
 		$entry->author = (string) $entry->user->name;
 		$obj->nickname = (string) $entry->user->nickname;
@@ -2221,7 +2245,10 @@ EOF;
 	 */
 	function get_twitter_post($entry) {
 		$obj = $this->get_post($entry->post_date);
-		$obj->post_title = __("Fresh From", _ffff_lang_domain) . " Twitter";
+
+		// 1.1.7 overwrite title prefix
+		if (get_option("ffff_prefix")) $obj->post_title = str_replace("%s", "Twitter", get_option("ffff_prefix_string"));
+		else $obj->post_title = __("Fresh From", _ffff_lang_domain) . " Twitter";
 
 		$obj->guid = "http://twitter.com/" . $entry->screen_name . "/statuses/" . $entry->id;
 		$obj->comment_count = 0;
