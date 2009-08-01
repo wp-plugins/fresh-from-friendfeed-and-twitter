@@ -3,8 +3,8 @@ Contributors: bob.hitching
 Donate link: http://www.nangqiantibetanfoundation.com/
 Tags: FriendFeed, Twitter, Flickr, Facebook, Google, LinkedIn, YouTube, fresh, feed, lifestream, posts, plugin
 Requires at least: 2.3
-Tested up to: 2.7.1
-Stable tag: 1.1.6
+Tested up to: 2.8.2
+Stable tag: 1.1.8
 
 Keeps your blog always fresh by regularly adding your latest and greatest content from FriendFeed or Twitter. No external passwords required!
 
@@ -12,9 +12,17 @@ Keeps your blog always fresh by regularly adding your latest and greatest conten
 
 Keeps your blog always fresh by regularly adding your latest and greatest content from FriendFeed or Twitter. No external passwords required!
 
-[Download](http://downloads.wordpress.org/plugin/fresh-from-friendfeed-and-twitter.1.1.6.zip) |
+[Download](http://downloads.wordpress.org/plugin/fresh-from-friendfeed-and-twitter.1.1.8.zip) |
 [Demo](http://hitching.net) |
 [Support](http://friendfeed.com/rooms/fresh-from-friendfeed-and-twitter)
+
+= New in 1.1.8 =
+
+* Now works properly in WordPress 2.8.x
+
+= New in 1.1.7 =
+
+* Admin option to overwrite post title prefix (e.g. to "New From %s" where %s = service)
 
 = New in 1.1.x =
 

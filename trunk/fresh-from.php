@@ -3,7 +3,7 @@
 Plugin Name: Fresh From FriendFeed and Twitter
 Plugin URI: http://wordpress.org/extend/plugins/fresh-from-friendfeed-and-twitter/
 Description: Keeps your blog always fresh by regularly adding your latest and greatest content from FriendFeed or Twitter. Content is imported as normal blog posts that you can edit and keep if you want. No external passwords required.
-Version: 1.1.7
+Version: 1.1.8
 Author: Bob Hitching
 Author URI: http://hitching.net/fresh-from-friendfeed-and-twitter
 
@@ -24,7 +24,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-define("_ffff_version", "1.1.7");
+define("_ffff_version", "1.1.8");
 define("_ffff_debug", false);
 define("_ffff_debug_email", "bob@hitching.net");
 define("_ffff_friendfeed_bot", "FriendFeedBot"); // user agent of Friendfeed Bot - so we can hide Fresh posts and avoid crashing the internet with an infinite loop
@@ -826,7 +826,8 @@ class freshfrom {
 		// add what needs to be added
 		foreach ($posts_insert AS $post) {
 			// add post
-			$post->post_content = addslashes(stripslashes($post->post_content)); // for Wordpress 2.0.x database insert
+//			$post->post_content = addslashes(stripslashes($post->post_content)); // for Wordpress 2.0.x database insert
+
 			$post_id = wp_insert_post($post);
 
 			// add meta data			
@@ -848,7 +849,7 @@ class freshfrom {
 			$post_id = $old_posts[$post->meta["_ffff_external_id"]];
 			
 			// update post
-			$post->post_content = addslashes(stripslashes($post->post_content)); // for Wordpress 2.0.x database insert
+//			$post->post_content = addslashes(stripslashes($post->post_content)); // for Wordpress 2.0.x database insert
 			$post->ID = $post_id;
 			$rv = wp_update_post($post);
 			
@@ -1653,7 +1654,43 @@ EOF;
 {$alerts}
 {$status}
 </div>
-<div id="poststuff" class="metabox-holder">
+<div id="poststuff" class="metabox-holder has-right-sidebar">
+EOF;
+		echo <<<EOF
+	<div class="inner-sidebar">
+		<div id="side-sortables" class="meta-box-sortabless" style="position:relative;">
+EOF;
+
+		$this->HtmlPrintBoxHeader('ffff_section_help', __('Help', _ffff_lang_domain));
+		$link = "<a href=\"{$support_room}\" target=_blank>" . __("Support Room", _ffff_lang_domain) . "</a>";
+		echo "<p>" . sprintf(__("Please visit the %s for help and support and FAQs, and to request features.", _ffff_lang_domain), $link) . "</p>";
+		$this->HtmlPrintBoxFooter();
+
+		$this->HtmlPrintBoxHeader('ffff_section_refresh', __('Refresh', _ffff_lang_domain));
+		echo "<p>" . __("Fresh From normally does a little bit of its work each time someone visits your site.", _ffff_lang_domain) . "</p>";
+		$link = "<a href=\"{$refresh_url}\" target=\"_ffff\">" . __("refresh", _ffff_lang_domain) . "</a>";
+		echo "<p>" . sprintf(__("After changing some settings, you might want to %s all your feeds in a single hit.", _ffff_lang_domain), $link) . "</p>";
+		echo "<p>" . __("This may take a few seconds if you have a lot of feeds.", _ffff_lang_domain) . "</p>";
+		$this->HtmlPrintBoxFooter();
+
+		$this->HtmlPrintBoxHeader('ffff_section_reset', __('Reset', _ffff_lang_domain));
+		echo "<form method=\"post\" name=\"reset\">\n";
+		if (function_exists('wp_nonce_field')) wp_nonce_field();
+		echo '<div class="submit" style="float:right;padding:0pt;"><input type="submit" name="reset" value="' . __("Reset", _ffff_lang_domain) . " &raquo;\" onClick=\"return confirm('" . __("Are you sure you want to reset Fresh From and start again?", _ffff_lang_domain) . "');\" /></div>";
+		echo "<p>" . __("Remove all your Fresh From feeds and imported content:", _ffff_lang_domain) . "</p></form>";
+		$this->HtmlPrintBoxFooter();
+
+		$this->HtmlPrintBoxHeader('ffff_section_debug', __('Debug', _ffff_lang_domain));
+		echo "<p>" . __("If Bob asks you to submit a Debug Report for diagnosis, please enter some details:", _ffff_lang_domain) . "</p>";
+		echo "<form method=\"post\" name=\"debug\">\n";
+		if (function_exists('wp_nonce_field')) wp_nonce_field();
+		echo '<div class="submit" style="float:right;padding:0pt;"><input type="submit" name="debug" value="' . __("Send", _ffff_lang_domain) . ' &raquo;" /></div>';
+		echo '<p><input type="text" name="debug_comment" value="' . __("Help Me..!", _ffff_lang_domain) . '" />';
+		echo "<br/><input type=\"checkbox\" name=\"debug_cc_admin\" id=\"debug_cc_admin\" /> <label for=\"debug_cc_admin\">cc: {$admin_email}</label></p></form>";
+		$this->HtmlPrintBoxFooter();
+		echo "</div></div>";
+		
+		echo <<<EOF
 <form method="post" name="options">
 EOF;
 		if (function_exists('wp_nonce_field')) wp_nonce_field();
@@ -1705,39 +1742,7 @@ EOF;
 
 		echo '</div></div><p class="submit"><input type="submit" name="Submit" value="' . __("Update Options", _ffff_lang_domain) . ' &raquo;" /></p></div></form>';
 
-		echo <<<EOF
-	<div class="inner-sidebar">
-		<div id="side-sortables" class="meta-box-sortabless" style="position:relative;">
-EOF;
-
-		$this->HtmlPrintBoxHeader('ffff_section_help', __('Help', _ffff_lang_domain));
-		$link = "<a href=\"{$support_room}\" target=_blank>" . __("Support Room", _ffff_lang_domain) . "</a>";
-		echo "<p>" . sprintf(__("Please visit the %s for help and support and FAQs, and to request features.", _ffff_lang_domain), $link) . "</p>";
-		$this->HtmlPrintBoxFooter();
-
-		$this->HtmlPrintBoxHeader('ffff_section_refresh', __('Refresh', _ffff_lang_domain));
-		echo "<p>" . __("Fresh From normally does a little bit of its work each time someone visits your site.", _ffff_lang_domain) . "</p>";
-		$link = "<a href=\"{$refresh_url}\" target=\"_ffff\">" . __("refresh", _ffff_lang_domain) . "</a>";
-		echo "<p>" . sprintf(__("After changing some settings, you might want to %s all your feeds in a single hit.", _ffff_lang_domain), $link) . "</p>";
-		echo "<p>" . __("This may take a few seconds if you have a lot of feeds.", _ffff_lang_domain) . "</p>";
-		$this->HtmlPrintBoxFooter();
-
-		$this->HtmlPrintBoxHeader('ffff_section_reset', __('Reset', _ffff_lang_domain));
-		echo "<form method=\"post\" name=\"reset\">\n";
-		if (function_exists('wp_nonce_field')) wp_nonce_field();
-		echo '<div class="submit" style="float:right;padding:0pt;"><input type="submit" name="reset" value="' . __("Reset", _ffff_lang_domain) . " &raquo;\" onClick=\"return confirm('" . __("Are you sure you want to reset Fresh From and start again?", _ffff_lang_domain) . "');\" /></div>";
-		echo "<p>" . __("Remove all your Fresh From feeds and imported content:", _ffff_lang_domain) . "</p></form>";
-		$this->HtmlPrintBoxFooter();
-
-		$this->HtmlPrintBoxHeader('ffff_section_debug', __('Debug', _ffff_lang_domain));
-		echo "<p>" . __("If Bob asks you to submit a Debug Report for diagnosis, please enter some details:", _ffff_lang_domain) . "</p>";
-		echo "<form method=\"post\" name=\"debug\">\n";
-		if (function_exists('wp_nonce_field')) wp_nonce_field();
-		echo '<div class="submit" style="float:right;padding:0pt;"><input type="submit" name="debug" value="' . __("Send", _ffff_lang_domain) . ' &raquo;" /></div>';
-		echo '<p><input type="text" name="debug_comment" value="' . __("Help Me..!", _ffff_lang_domain) . '" />';
-		echo "<br/><input type=\"checkbox\" name=\"debug_cc_admin\" id=\"debug_cc_admin\" /> <label for=\"debug_cc_admin\">cc: {$admin_email}</label></p></form>";
-		$this->HtmlPrintBoxFooter();
-		echo "</div></div></div></div>";
+		echo "</div></div>";
 	}
 	
 	function HtmlPrintBoxHeader($id, $title, $right = false) {
