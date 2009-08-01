@@ -1,0 +1,297 @@
+# SOME DESCRIPTIVE TITLE.
+# This file is put in the public domain.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tag/fresh-from-friendfeed-and-"
+"twitter\n"
+"POT-Creation-Date: 2009-03-07 09:23+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: fresh-from.php:234
+msgid "Fresh From settings"
+msgstr ""
+
+#: fresh-from.php:235
+#, php-format
+msgid "Please update your %s - start by adding a Feed"
+msgstr ""
+
+#: fresh-from.php:255 fresh-from.php:1722
+msgid "Fresh From FriendFeed and Twitter"
+msgstr ""
+
+#: fresh-from.php:271
+msgid "Settings"
+msgstr ""
+
+#: fresh-from.php:297 fresh-from.php:632 fresh-from.php:635
+#: fresh-from.php:1942 fresh-from.php:2149
+msgid "Fresh From"
+msgstr ""
+
+#: fresh-from.php:641
+msgid "today"
+msgstr ""
+
+#: fresh-from.php:642
+msgid "this week"
+msgstr ""
+
+#: fresh-from.php:1089
+#, php-format
+msgid "This blog is kept fresh by the %s plugin."
+msgstr ""
+
+#: fresh-from.php:1115
+#, php-format
+msgid "Powered by %s"
+msgstr ""
+
+#: fresh-from.php:1281
+msgid "has been deleted."
+msgstr ""
+
+#: fresh-from.php:1448
+msgid "Delete"
+msgstr ""
+
+#: fresh-from.php:1449
+msgid "FAIL"
+msgstr ""
+
+#: fresh-from.php:1450
+msgid "OK"
+msgstr ""
+
+#: fresh-from.php:1451
+#, php-format
+msgid "%s seconds ago"
+msgstr ""
+
+#: fresh-from.php:1456
+msgid "Select feed type"
+msgstr ""
+
+#: fresh-from.php:1465
+msgid "Add"
+msgstr ""
+
+#: fresh-from.php:1474 fresh-from.php:1489
+msgid "Unlimited"
+msgstr ""
+
+#: fresh-from.php:1521 fresh-from.php:1531 fresh-from.php:1537
+#: fresh-from.php:1550 fresh-from.php:1551
+msgid ""
+"Changing this setting will delete all posts previously imported by Fresh "
+"From."
+msgstr ""
+
+#: fresh-from.php:1521
+msgid "Keep it Fresh"
+msgstr ""
+
+#: fresh-from.php:1522
+#, php-format
+msgid ""
+"Simply show my %s latest and greatest items, regularly refreshed. Less is "
+"more."
+msgstr ""
+
+#: fresh-from.php:1532
+msgid "day"
+msgstr ""
+
+#: fresh-from.php:1532
+msgid "week"
+msgstr ""
+
+#: fresh-from.php:1537
+msgid "Keep it Coming"
+msgstr ""
+
+#: fresh-from.php:1538
+#, php-format
+msgid "Import up to %s items every %s into my blog"
+msgstr ""
+
+#: fresh-from.php:1543
+msgid "Only import items containing"
+msgstr ""
+
+#: fresh-from.php:1547
+msgid "Exclude @replies from Twitter"
+msgstr ""
+
+#: fresh-from.php:1552
+msgid "per service"
+msgstr ""
+
+#: fresh-from.php:1552
+msgid "per user"
+msgstr ""
+
+#: fresh-from.php:1552
+msgid "all together"
+msgstr ""
+
+#: fresh-from.php:1556
+msgid "Combine my items into a single digest post "
+msgstr ""
+
+#: fresh-from.php:1560
+msgid "Published"
+msgstr ""
+
+#: fresh-from.php:1560
+msgid "Draft"
+msgstr ""
+
+#: fresh-from.php:1564
+#, php-format
+msgid "Imported posts are %s"
+msgstr ""
+
+#: fresh-from.php:1567
+msgid "Show profile pictures"
+msgstr ""
+
+#: fresh-from.php:1568
+msgid "Show full URL hints for these URL shorteners:"
+msgstr ""
+
+#: fresh-from.php:1569
+msgid "Show images from Twitpic links"
+msgstr ""
+
+#: fresh-from.php:1570
+msgid "Show videos from Youtube links"
+msgstr ""
+
+#: fresh-from.php:1571
+msgid "Show Fresh From posts in my RSS feeds"
+msgstr ""
+
+#: fresh-from.php:1591
+msgid "Feeds"
+msgstr ""
+
+#: fresh-from.php:1593
+msgid "You can mashup as many feeds as you like. No passwords required."
+msgstr ""
+
+#: fresh-from.php:1600
+msgid "Services"
+msgstr ""
+
+#: fresh-from.php:1601
+msgid "You can limit the number of items imported from each of these services:"
+msgstr ""
+
+#: fresh-from.php:1607
+msgid "Users"
+msgstr ""
+
+#: fresh-from.php:1608
+msgid "You can limit the number of items imported from each of these users:"
+msgstr ""
+
+#: fresh-from.php:1613
+msgid "Import"
+msgstr ""
+
+#: fresh-from.php:1622
+msgid "Content"
+msgstr ""
+
+#: fresh-from.php:1630
+msgid "Update Options"
+msgstr ""
+
+#: fresh-from.php:1637
+msgid "Help"
+msgstr ""
+
+#: fresh-from.php:1638
+msgid "Support Room"
+msgstr ""
+
+#: fresh-from.php:1639
+#, php-format
+msgid ""
+"Please visit the %s for help and support and FAQs, and to request features."
+msgstr ""
+
+#: fresh-from.php:1642
+msgid "Refresh"
+msgstr ""
+
+#: fresh-from.php:1643
+msgid ""
+"Fresh From normally does a little bit of its work each time someone visits "
+"your site."
+msgstr ""
+
+#: fresh-from.php:1644
+msgid "refresh"
+msgstr ""
+
+#: fresh-from.php:1645
+#, php-format
+msgid ""
+"After changing some settings, you might want to %s all your feeds in a "
+"single hit."
+msgstr ""
+
+#: fresh-from.php:1646
+msgid "This may take a few seconds if you have a lot of feeds."
+msgstr ""
+
+#: fresh-from.php:1649 fresh-from.php:1652
+msgid "Reset"
+msgstr ""
+
+#: fresh-from.php:1652
+msgid "Are you sure you want to reset Fresh From and start again?"
+msgstr ""
+
+#: fresh-from.php:1653
+msgid "Remove all your Fresh From feeds and imported content:"
+msgstr ""
+
+#: fresh-from.php:1656
+msgid "Debug"
+msgstr ""
+
+#: fresh-from.php:1657
+msgid ""
+"If Bob asks you to submit a Debug Report for diagnosis, please enter some "
+"details:"
+msgstr ""
+
+#: fresh-from.php:1660
+msgid "Send"
+msgstr ""
+
+#: fresh-from.php:1661
+msgid "Help Me..!"
+msgstr ""
+
+#: fresh-from.php:1707
+msgid ""
+"This post will be automatically replaced if fresher content becomes "
+"available or if you Reset the Fresh From plugin."
+msgstr ""
+
+#: fresh-from.php:1712
+msgid "Do not replace this post, I want to keep it!"
+msgstr ""
