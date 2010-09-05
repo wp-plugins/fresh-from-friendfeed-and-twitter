@@ -3,11 +3,11 @@
 Plugin Name: Fresh From FriendFeed and Twitter
 Plugin URI: http://wordpress.org/extend/plugins/fresh-from-friendfeed-and-twitter/
 Description: Keeps your blog always fresh by regularly adding your latest and greatest content from FriendFeed or Twitter. Content is imported as normal blog posts that you can edit and keep if you want. No external passwords required.
-Version: 1.1.8
+Version: 1.1.9
 Author: Bob Hitching
 Author URI: http://hitching.net/fresh-from-friendfeed-and-twitter
 
-Copyright (c) 2009 Bob Hitching (bob@hitching.net)
+Copyright (c) 2010 Bob Hitching (bob@hitching.net)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-define("_ffff_version", "1.1.8");
+define("_ffff_version", "1.1.9");
 define("_ffff_debug", false);
 define("_ffff_debug_email", "bob@hitching.net");
 define("_ffff_friendfeed_bot", "FriendFeedBot"); // user agent of Friendfeed Bot - so we can hide Fresh posts and avoid crashing the internet with an infinite loop
@@ -2151,7 +2151,7 @@ EOF;
 			"_ffff_service"=>"friendfeed", 
 			"_ffff_username"=>$obj->nickname, 
 			"_ffff_external_id"=>(string) $entry->id, 
-			"_ffff_author"=>$entry->author, 
+			"_ffff_author"=>(string) $entry->author, // 1.3.0 added (string)
 			"_ffff_iconUrl"=>$iconUrl, 
 			"_ffff_service_name"=>$service_name, 
 			"_ffff_profileUrl"=>(string) $entry->service->profileUrl,
