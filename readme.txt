@@ -4,7 +4,7 @@ Donate link: http://www.nangqiantibetanfoundation.com/
 Tags: FriendFeed, Twitter, Flickr, Facebook, Google, LinkedIn, YouTube, fresh, feed, lifestream, posts, plugin
 Requires at least: 2.3
 Tested up to: 3.0.1
-Stable tag: 1.1.9
+Stable tag: 1.1.8
 
 Keeps your blog always fresh by regularly adding your latest and greatest content from FriendFeed or Twitter. No external passwords required!
 
